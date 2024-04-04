@@ -1,0 +1,7 @@
+data/com.github.RozeFound.Weeb.desktop.in
+data/com.github.RozeFound.Weeb.metainfo.xml.in
+data/com.github.RozeFound.Weeb.gschema.xml
+data/ui/window.blp
+data/ui/help_overlay.blp
+weeb/frontend/main.py
+weeb/frontend/views/window.py

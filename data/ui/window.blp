@@ -1,0 +1,46 @@
+using Gtk 4.0;
+using Adw 1;
+
+menu primary_menu {
+    section {
+        item(_("Preferences"), "app.preferences")
+        item(_("Keyboard Shortcuts"), "win.show-help-overlay")
+    }
+    section {
+        item(_("About Weeb"), "app.about")
+        item(_("Quit"), "app.quit")
+    }
+
+}
+
+template $WeebWindow : Adw.ApplicationWindow {
+
+    title: "Weeb";
+    icon-name: "com.github.RozeFound.Weeb";
+
+    Adw.ToolbarView {
+
+        [top]
+        Adw.HeaderBar {
+            centering-policy: strict;
+            styles ["flat"]
+
+            [end]
+            Gtk.MenuButton {
+                primary: true;
+                icon-name: "open-menu-symbolic";
+                menu-model: primary_menu;
+            }
+
+        }
+
+        Gtk.Label label {
+            label: _("Hello, Weeb!");
+            hexpand: true;
+            vexpand: true;
+            styles ["title-1"]
+        }
+
+    }
+
+}
