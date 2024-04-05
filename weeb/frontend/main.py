@@ -23,6 +23,8 @@ import gi
 gi.require_version('Gtk', '4.0')
 gi.require_version('Adw', '1')
 
+import logging
+
 from gi.repository import Gtk, Gio, Adw
 
 from weeb.frontend.views.window import WeebWindow
@@ -51,7 +53,7 @@ class WeebApplication(Adw.Application):
         self.create_action('about', self.on_about_action)
         self.create_action('preferences', self.on_preferences_action, ["<primary>comma"])
 
-    def on_about_action(self, widget, _):
+    def on_about_action(self, *args):
         """Callback for the app.about action."""
         about = Adw.AboutWindow(transient_for=self.props.active_window,
                                 application_name='weeb',
@@ -62,9 +64,9 @@ class WeebApplication(Adw.Application):
                                 copyright='© 2024 RozeFound')
         about.present()
 
-    def on_preferences_action(self, widget, _):
+    def on_preferences_action(self, *args):
         """Callback for the app.preferences action."""
-        print('app.preferences action activated')
+        logging.info('app.preferences action activated')
 
     def create_action(self, name, callback, shortcuts=None):
 
@@ -74,8 +76,14 @@ class WeebApplication(Adw.Application):
 
         if shortcuts: self.set_accels_for_action(f"app.{name}", shortcuts)
 
+def setup_logging() -> None:
+    format = "[%(asctime)s] [weeb] [%(levelname)s] %(message)s"
+    datefmt = "%Y-%m-%d %H:%M:%S.%03d"
+    logging.basicConfig(level=logging.INFO, format=format, datefmt=datefmt)
 
-def main(version):
+def main(version: str):
     """The application's entry point."""
+    setup_logging()
     app = WeebApplication()
+    logging.info(f"Starting weeb v{version}")
     return app.run(sys.argv)
