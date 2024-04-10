@@ -1,7 +1,7 @@
 backenddir = join_paths(PKGDATA_DIR, 'weeb/backend')
 
 config_file = configure_file(
-  input: 'constants.in',
+  input: 'constants.py',
   output: 'constants.py',
   configuration: configuration_data({
     'APP_ID': APPLICATION_ID,
