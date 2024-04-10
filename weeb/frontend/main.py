@@ -49,32 +49,40 @@ class WeebApplication(Adw.Application):
         if not self.win: self.win = WeebWindow(application=self)
         self.win.present()
 
-        self.create_action('quit', self.win.on_close_request, ['<primary>q'])
-        self.create_action('about', self.on_about_action)
-        self.create_action('preferences', self.on_preferences_action, ["<primary>comma"])
+        self.create_action('quit', ['<primary>q'])
+        self.create_action('about')
+        self.create_action('preferences', ["<primary>comma"])
+        self.create_action('toggle_search', ["<primary>f"], self.win)
+
+    def on_quit_action(self, *args):
+        """Callback for the app.quit action."""
+        self.win.on_close_request(*args)
 
     def on_about_action(self, *args):
         """Callback for the app.about action."""
-        about = Adw.AboutWindow(transient_for=self.props.active_window,
-                                application_name='weeb',
+        about = Adw.AboutDialog(application_name='Weeb',
                                 application_icon=app_id,
                                 developer_name='RozeFound',
                                 version=version,
                                 developers=['RozeFound'],
                                 copyright='© 2024 RozeFound')
-        about.present()
+        about.present(self.win)
 
     def on_preferences_action(self, *args):
         """Callback for the app.preferences action."""
         logging.info('app.preferences action activated')
 
-    def create_action(self, name, callback, shortcuts=None):
+    def create_action(self, name: str, shortcuts: list[str] = None, scope: object = None) -> None:
+
+        scope = self if scope is None else scope
 
         action = Gio.SimpleAction.new(name, None)
-        action.connect("activate", callback)
-        self.add_action(action)
+        action.connect("activate", getattr(scope, f"on_{name}_action"))
+        scope.add_action(action)
 
-        if shortcuts: self.set_accels_for_action(f"app.{name}", shortcuts)
+        if shortcuts: 
+            accel = f"app.{name}" if scope == self else f"win.{name}"
+            self.set_accels_for_action(accel, shortcuts)
 
 def setup_logging() -> None:
     format = "[%(asctime)s] [weeb] [%(levelname)s] %(message)s"

@@ -21,11 +21,16 @@ from gi.repository import Adw
 from gi.repository import Gtk
 from gi.repository import Gio
 
+import logging
+
 from weeb.backend.constants import app_id, root
 
 @Gtk.Template(resource_path=f'{root}/ui/window.ui')
 class WeebWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'WeebWindow'
+
+    search_bar: Gtk.SearchBar = Gtk.Template.Child()
+    search_entry: Gtk.SearchEntry = Gtk.Template.Child()
 
     label: Gtk.Label = Gtk.Template.Child()
 
@@ -41,9 +46,24 @@ class WeebWindow(Adw.ApplicationWindow):
         self.connect("unrealize", self.on_unrealize)
 
     def on_close_request(self, *args):
+        """Callback for the win.close_request event."""
+        
         self.close()
 
     def on_unrealize(self, *args):
+        """Callback for the win.unrealize event."""
+
         width, height = self.get_default_size()
         self.settings.set_int('width', width)
         self.settings.set_int('height', height)
+
+    def on_toggle_search_action(self, *args):
+        """Callback for the win.toggle_search action."""
+
+        search_mode = not self.search_bar.get_search_mode()
+        self.search_bar.set_search_mode(search_mode)
+
+        if search_mode:
+            self.set_focus(self.search_entry)
+
+        self.search_entry.set_text("")
