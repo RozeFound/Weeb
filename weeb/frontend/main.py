@@ -25,9 +25,10 @@ gi.require_version('Adw', '1')
 
 import logging
 
-from gi.repository import Gtk, Gio, Adw
+from gi.repository import Gio, Adw
 
 from weeb.frontend.views.window import WeebWindow
+from weeb.frontend.views.preferences import Preferences
 from weeb.backend.constants import app_id, version, root
 
 class WeebApplication(Adw.Application):
@@ -70,7 +71,9 @@ class WeebApplication(Adw.Application):
 
     def on_preferences_action(self, *args):
         """Callback for the app.preferences action."""
-        logging.info('app.preferences action activated')
+        if not hasattr(self, "preferences"):
+            self.preferences = Preferences(application=self)
+        self.preferences.present(self.win)
 
     def create_action(self, name: str, shortcuts: list[str] = None, scope: object = None) -> None:
 

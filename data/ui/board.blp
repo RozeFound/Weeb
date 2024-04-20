@@ -1,0 +1,45 @@
+using Gtk 4.0; 
+using Adw 1;
+
+template $Board : Adw.Bin {
+
+    hexpand: true;
+    vexpand: true;
+
+    Gtk.Box {
+        orientation: vertical;
+
+        Adw.StatusPage placeholder  {
+            title: _("Hello, Weeb!");
+            hexpand: true;
+            vexpand: true;
+            styles ["label"]
+        }
+
+        Gtk.ScrolledWindow scroll {
+
+            visible: false;
+
+            Gtk.FlowBox flow {
+
+                row-spacing: 5;
+                column-spacing: 5;
+                margin-top: 5;
+                margin-start: 5;
+                margin-bottom: 5;
+                margin-end: 5;
+                homogeneous: true;
+                valign: start;
+                halign: center;
+                selection-mode: none;
+
+                min-children-per-line: 5;
+                max-children-per-line: bind template.items_per_line;
+
+            }
+
+        }
+
+    }
+
+}

@@ -50,6 +50,7 @@ template $WeebWindow : Adw.ApplicationWindow {
 
                 SearchEntry search_entry {
                     placeholder-text: _("Search");
+                    search-changed => $on_searchentry_search_changed();
                     hexpand: true;
 
                     ShortcutController {
@@ -70,12 +71,7 @@ template $WeebWindow : Adw.ApplicationWindow {
 
         }
 
-        Gtk.Label label {
-            label: _("Hello, Weeb!");
-            hexpand: true;
-            vexpand: true;
-            styles ["title-1"]
-        }
+        $Board board {}
 
     }
 

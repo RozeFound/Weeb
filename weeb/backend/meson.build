@@ -11,8 +11,15 @@ config_file = configure_file(
   install_dir: backenddir
 )
 
+subdir('utils')
+subdir('providers')
+
 weeb_sources = [
     '__init__.py',
+    'primitives.py',
+    'providers_manager.py',
+    'downloader.py',
+    'settings.py',
 ]
 
 install_data(weeb_sources, install_dir: backenddir)

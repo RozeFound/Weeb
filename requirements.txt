@@ -38,5 +38,3 @@ socksio==1.0.0
     # via httpx
 typing-extensions==4.10.0
     # via hishel
-xxhash==3.4.1
-    # via -r requirements.in

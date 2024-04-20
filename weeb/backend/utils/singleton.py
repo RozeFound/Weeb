@@ -1,4 +1,4 @@
-# constants.py
+# singleton.py
 #
 # Copyright 2024 RozeFound
 #
@@ -17,6 +17,11 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-app_id = '@APP_ID@'
-version = '@APP_VERSION@'
-root = '/' + app_id.replace('.', '/')
+class Singleton(type):
+
+    _instances = {}
+
+    def __call__(cls, *args, **kwargs):
+        if cls not in cls._instances:
+            cls._instances[cls] = super(Singleton, cls).__call__(*args, **kwargs)
+        return cls._instances[cls]

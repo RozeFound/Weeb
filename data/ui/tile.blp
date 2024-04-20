@@ -1,0 +1,16 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $Tile : Gtk.Box {
+
+    overflow: hidden;
+
+    Gtk.Image image {
+        hexpand: true;
+        vexpand: true;
+        paintable: bind template.paintable;
+    }
+
+    styles ["card"]
+    
+}

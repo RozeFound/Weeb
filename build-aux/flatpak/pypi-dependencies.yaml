@@ -4,7 +4,7 @@ buildsystem: simple
 build-commands:
 - pip3 install --verbose --exists-action=i --no-index --find-links="file://${PWD}"
   --prefix=${FLATPAK_DEST} --no-build-isolation anyio certifi h11 h2 hishel hpack
-  httpcore httpx hyperframe idna sniffio socksio typing-extensions xxhash
+  httpcore httpx hyperframe idna sniffio socksio typing-extensions
 sources:
 - type: file
   url: https://files.pythonhosted.org/packages/14/fd/2f20c40b45e4fb4324834aea24bd4afdf1143390242c0b33774da0e2e34f/anyio-4.3.0-py3-none-any.whl
@@ -45,8 +45,3 @@ sources:
 - type: file
   url: https://files.pythonhosted.org/packages/f9/de/dc04a3ea60b22624b51c703a84bbe0184abcd1d0b9bc8074b5d6b7ab90bb/typing_extensions-4.10.0-py3-none-any.whl
   sha256: 69b1a937c3a517342112fb4c6df7e72fc39a38e7891a5730ed4985b5214b5475
-- type: file
-  url: https://files.pythonhosted.org/packages/eb/3a/25c4aecb61a49d4415fd71d4f66a8a5b558dd44a52d7054ea9aa59ccbac1/xxhash-3.4.1-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
-  sha256: b2746035f518f0410915e247877f7df43ef3372bf36cfa52cc4bc33e85242641
-  only-arches:
-  - x86_64

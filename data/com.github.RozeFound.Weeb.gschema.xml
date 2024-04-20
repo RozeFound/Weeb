@@ -2,14 +2,16 @@
 <schemalist gettext-domain="weeb">
 	<schema id="com.github.RozeFound.Weeb" path="/com/github/RozeFound/Weeb/">
 
-		<key type="i" name="width">
+		<key type="i" name="window-width">
 			<default>800</default>
-			<summary>Main Window Width</summary>
 		</key>
 
-		<key type="i" name="height">
+		<key type="i" name="window-height">
 			<default>600</default>
-			<summary>Main Window Height</summary>
+		</key>
+
+		<key type="b" name="window-maximized">
+			<default>false</default>
 		</key>
 
 	</schema>

@@ -1,4 +1,4 @@
-# constants.py
+# tile.py
 #
 # Copyright 2024 RozeFound
 #
@@ -17,6 +17,25 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-app_id = '@APP_ID@'
-version = '@APP_VERSION@'
-root = '/' + app_id.replace('.', '/')
+from gi.repository import Gtk, Gdk, GObject
+
+from weeb.backend.constants import root
+from weeb.backend.primitives import Asset
+from weeb.frontend.views.stream_image import StreamImage
+
+@Gtk.Template(resource_path=f"{root}/ui/tile.ui")
+class Tile(Gtk.Box):
+
+    __gtype_name__ = "Tile"
+
+    paintable = GObject.Property(type=Gdk.Paintable)
+
+    def __init__(self, asset: Asset, **kwargs):
+
+        self.variant = asset.preview
+
+        super().__init__(**kwargs,
+            width_request=self.variant.width,
+            height_request=self.variant.height)
+
+        self.paintable = StreamImage(self.variant)

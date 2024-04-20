@@ -1,0 +1,100 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $Preferences : Adw.PreferencesDialog {
+
+    Adw.PreferencesPage {
+        title: _("General");
+    }
+
+    Adw.PreferencesPage {
+        title: _("Providers");
+    }
+
+    Adw.PreferencesPage {
+
+        title: _("Proxy");
+
+        Adw.PreferencesGroup {
+
+            title: _("General");
+
+            [header-suffix]
+            Gtk.Button proxy_general_apply_btn {
+                label: "Apply";
+                clicked => $on_proxy_general_apply();
+                styles ["suggested-action"]
+            }            
+
+            Adw.ComboRow proxy_type_row {
+
+                title: _("Type");
+                
+                model: Gtk.StringList {
+                    strings [_("None"), "HTTP", "HTTPS", "SOCKS5"]
+                };
+                
+                notify::selected => $on_proxy_type_selected();
+                
+            }
+
+            Adw.EntryRow proxy_host_row {
+
+                sensitive: false;
+                title: _("Host");
+
+                [suffix]
+                Gtk.Label {
+                    label: _(":");
+                }
+
+                changed => $on_proxy_general_changed();
+
+                [suffix]
+                Gtk.SpinButton proxy_port_btn {                    
+                    valign: center;
+                    adjustment: Gtk.Adjustment {
+                        value: 8080;
+                        lower: 0;
+                        upper: 65535;
+                        step-increment: 1;
+                        page-increment: 10;
+                        page-size: 0;
+                    };
+
+                    changed => $on_proxy_general_changed();
+
+                }
+
+            }
+
+        }
+
+        Adw.PreferencesGroup {
+
+                title: _("Credentials");
+
+                [header-suffix]
+                Gtk.Button proxy_credentials_apply_btn {
+                    label: "Apply";
+                    clicked => $on_proxy_credentials_apply();
+                    styles ["suggested-action"]
+                }
+        
+                Adw.EntryRow proxy_username_row {
+                    sensitive: false;
+                    title: _("Username");
+                    changed => $on_proxy_credentials_changed();
+                }
+
+                Adw.PasswordEntryRow proxy_password_row {
+                    sensitive: false;
+                    title: _("Password");
+                    changed => $on_proxy_credentials_changed();
+                }
+
+            }
+        
+    }
+
+}
