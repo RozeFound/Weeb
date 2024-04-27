@@ -17,60 +17,85 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import GObject, Gdk, Gtk, Graphene, GLib
-from weeb.backend.utils.threading import Expected
+from gi.repository import GObject, Gdk, Gtk, Graphene, GLib, GdkPixbuf
 
 from weeb.backend.primitives import Variant
 from weeb.backend.downloader import Downloader
-
 
 class StreamImage(GObject.GObject, Gdk.Paintable):
 
     __gtype_name__ = "StreamImage"
 
-    def __init__(self, variant: Variant, preload: bool = False) -> None:
+    def __init__(self, variant: Variant, early_init: bool = False, preload: bool = False) -> None:
+        super().__init__()
 
         self.downloader = Downloader()
+
+        self.loader = GdkPixbuf.PixbufLoader()
+        self.loader.connect("area-updated", self.area_updated)
+        self.loader.connect("area-prepared", self.area_prepared)
 
         self.width = variant.width
         self.height = variant.height
         self.url = variant.url
 
+        self.can_read = False
+        self.initialized = False
+        self.loaded = False
+
         self.texture: Gdk.Texture = None
 
-        self.initialized = False
-
         if preload:
-            self._lazy_init()
+            buffer = GLib.Bytes.new(self.downloader.download(self.url))
+            self.texture = Gdk.Texture.new_from_bytes(buffer)
+            self.initialized = self.loaded = True
 
-        super().__init__()
+        if early_init: self._lazy_init()
+
+    def area_prepared(self, *args) -> None:
+        self.can_read = True
+
+    def area_updated(self, *args) -> None: 
+        if self.can_read: 
+            pixbuf = self.loader.get_pixbuf()
+            self.texture = Gdk.Texture.new_for_pixbuf(pixbuf)
+            self.invalidate_contents()
 
     def _lazy_init(self) -> None:
 
         if self.initialized:
             return
 
-        def update_data(data: Expected[bytes]) -> None:   
-            buffer = GLib.Bytes.new(data.value)
-            self.texture = Gdk.Texture.new_from_bytes(buffer)
+        def finalize() -> None: 
+            self.loader.close()
             self.invalidate_contents()
+            self.loaded = True
 
-        self.downloader.download_async(self.url, update_data)
+        def update_data(data: bytes) -> None:    
+            buffer = GLib.Bytes.new(data)
+            self.loader.write_bytes(buffer)
+
+        e_bytes = self.downloader.download_async(self.url, update_data, stream=True)
+        e_bytes.set_on_finish(finalize)
+
         self.initialized = True
 
     def do_get_intrinsic_width(self) -> int: return self.width
     def do_get_intrinsic_height(self) -> int: return self.height
     def do_get_intrinsic_aspect_ratio(self) -> float: return self.width / self.height
-
-    def do_get_current_image(self) -> Gdk.Paintable: 
-        self._lazy_init()
-        return self.texture
+    def do_get_current_image(self) -> Gdk.Paintable: return self.texture
+    def do_get_flags(self) -> Gdk.PaintableFlags: 
+        flags = Gdk.PaintableFlags.SIZE
+        if self.loaded: flags |= Gdk.PaintableFlags.CONTENTS
+        return Gdk.PaintableFlags(flags)
 
     def do_snapshot(self, snapshot: Gtk.Snapshot, width: float, height: float) -> None:
 
         rect = Graphene.Rect()
         rect = rect.init(0, 0, width, height)
 
-        if texture := self.get_current_image():
-            snapshot.append_texture(texture, rect)
-        else: snapshot.append_color(Gdk.RGBA(), rect)
+        if self.texture is not None:
+            snapshot.append_texture(self.texture, rect)
+        else: 
+            self._lazy_init()
+            snapshot.append_color(Gdk.RGBA(), rect)
