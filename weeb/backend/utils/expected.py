@@ -92,10 +92,6 @@ class Expected(Generic[T]):
 
         return self.__on_cancel_cb
 
-    @on_cancel.setter
-    def on_cancel(self, callback: Callable) -> None:
-        self.__on_cancel_cb = callback
-
     @property
     def on_fail(self) -> Callable:
 
@@ -103,10 +99,6 @@ class Expected(Generic[T]):
             return lambda *args, **kwargs: None
 
         return self.__on_fail_cb
-
-    @on_fail.setter
-    def on_fail(self, callback: Callable) -> None:
-        self.__on_fail_cb = callback
 
     @property
     def on_finish(self) -> Callable:
@@ -116,7 +108,11 @@ class Expected(Generic[T]):
 
         return self.__on_finish_cb
 
-    @on_finish.setter
-    def on_finish(self, callback: Callable) -> None:
-        self.__on_finish_cb = callback
+    def set_on_cancel(self, on_cancel: Callable) -> None:
+        self.__on_cancel_cb = on_cancel
 
+    def set_on_fail(self, on_fail: Callable) -> None:
+        self.__on_fail_cb = on_fail
+
+    def set_on_finish(self, on_finish: Callable) -> None:
+        self.__on_finish_cb = on_finish
