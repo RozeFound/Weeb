@@ -1,16 +1,19 @@
 using Gtk 4.0;
 using Adw 1;
 
-template $Tile : Gtk.Box {
+template $Tile : Gtk.Button {
+
+    clicked => $on_clicked();
+
+    valign: center;
+    halign: center;
 
     overflow: hidden;
 
-    Gtk.Image image {
-        hexpand: true;
-        vexpand: true;
-        paintable: bind template.paintable;
+    Gtk.Picture picture {
+        content-fit: cover;
     }
 
     styles ["card"]
-    
+
 }

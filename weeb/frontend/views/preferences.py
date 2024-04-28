@@ -17,7 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import logging
+import logging, subprocess
 from gi.repository import Gtk, Adw
 
 from weeb.backend.constants import root
@@ -31,6 +31,11 @@ class Preferences(Adw.PreferencesDialog):
     open_config_file_btn: Gtk.Button = Gtk.Template.Child()
     open_config_folder_btn: Gtk.Button = Gtk.Template.Child()
     delete_config_file_btn: Gtk.Button = Gtk.Template.Child()
+
+    board_orientation_row: Adw.ComboRow = Gtk.Template.Child()
+    board_tile_size_row: Adw.SpinRow = Gtk.Template.Child()
+    board_tile_min_preview_row: Adw.SpinRow = Gtk.Template.Child()
+    general_board_apply_btn: Gtk.Button = Gtk.Template.Child()
 
     proxy_type_row: Adw.ComboRow = Gtk.Template.Child()
     proxy_host_row: Adw.EntryRow = Gtk.Template.Child()
@@ -54,6 +59,19 @@ class Preferences(Adw.PreferencesDialog):
         self.open_config_folder_btn.connect("clicked",
             lambda *args: self.settings.open_folder(self.app.window))
 
+        self.set_values_from_config()
+
+        self.general_board_apply_btn.set_sensitive(False)
+        self.proxy_general_apply_btn.set_sensitive(False)
+        self.proxy_credentials_apply_btn.set_sensitive(False)
+
+    def set_values_from_config(self) -> None:
+
+        self.board_orientation_row.set_selected(self.settings.get("board/orientation", 0))
+
+        self.board_tile_size_row.set_value(self.settings.get("board/tile/size", 180))
+        self.board_tile_min_preview_row.set_value(self.settings.get("board/tile/min_preview", 120))
+
         self.proxy_type_row.set_selected(self.settings.get("proxy/type", 0))
         self.proxy_host_row.set_text(self.settings.get("proxy/host", "127.0.0.1"))
         self.proxy_port_btn.set_value(self.settings.get("proxy/port", 8080))
@@ -63,8 +81,7 @@ class Preferences(Adw.PreferencesDialog):
             self.proxy_username_row.set_text(username)
             self.proxy_password_row.set_text(password)
 
-        self.proxy_general_apply_btn.set_sensitive(False)
-        self.proxy_credentials_apply_btn.set_sensitive(False)
+#region GENERAL
 
     @Gtk.Template.Callback()
     def on_delete_config_file_clicked(self, *args) -> None:
@@ -85,6 +102,35 @@ class Preferences(Adw.PreferencesDialog):
         dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
 
         dialog.choose(self, None, on_response_selected)
+
+    @Gtk.Template.Callback()
+    def on_general_board_changed(self, *args) -> None:
+        self.general_board_apply_btn.set_sensitive(True)
+        
+    @Gtk.Template.Callback()
+    def on_general_board_apply(self, *args) -> None:
+
+        self.settings.set("board/orientation", self.board_orientation_row.get_selected())
+        self.settings.set("board/tile/size", self.board_tile_size_row.get_value())
+        self.settings.set("board/tile/min_preview", self.board_tile_min_preview_row.get_value())
+
+        self.general_board_apply_btn.set_sensitive(False)
+
+        def do_restart(*args) -> None:
+            subprocess.Popen("sleep 1 && weeb & disown", shell=True)
+            self.app.on_quit_action()
+
+        toast = Adw.Toast(
+            title="Some changes will take effect only restart",
+            button_label="Relaunch Weeb")
+
+        toast.connect("button-clicked", do_restart)
+
+        self.add_toast(toast)
+
+#endregion
+
+#region PROXY
 
     @Gtk.Template.Callback()
     def on_proxy_type_selected(self, *args) -> None:
@@ -149,3 +195,5 @@ class Preferences(Adw.PreferencesDialog):
             if username and password: userdata = f"{username}:{password}@" 
 
         self.settings.set("proxy/uri", f"{schema}{userdata}{host}:{port}")
+
+#endregion

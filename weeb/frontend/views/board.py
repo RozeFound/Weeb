@@ -17,14 +17,15 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Gtk, Adw, GObject
+from gi.repository import Gtk, Adw, GLib
 
 from weeb.backend.constants import root
-from weeb.backend.utils.expected import Expected
 from weeb.backend.primitives import Asset
-
-from weeb.frontend.views.tile import Tile
+from weeb.backend.utils.expected import Expected
 from weeb.backend.providers_manager import ProvidersManager
+
+from weeb.frontend.views.flow_grid import FlowGrid
+from weeb.frontend.views.tile import Tile
 
 @Gtk.Template(resource_path=f"{root}/ui/board.ui")
 class Board(Adw.Bin):
@@ -33,9 +34,7 @@ class Board(Adw.Bin):
 
     placeholder: Adw.StatusPage = Gtk.Template.Child()
     scroll: Gtk.ScrolledWindow = Gtk.Template.Child()
-    flow: Gtk.FlowBox = Gtk.Template.Child()
-
-    items_per_line = GObject.property(type=int, default=0)
+    flow: FlowGrid = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
 
@@ -62,8 +61,6 @@ class Board(Adw.Bin):
         for asset in assets:
             tile = Tile(asset)
             self.flow.append(tile)
-
-        self.items_per_line = len(self.assets)
 
         self.placeholder.set_visible(len(assets) == 0)
         self.scroll.set_visible(len(assets) != 0)

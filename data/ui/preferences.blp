@@ -9,6 +9,67 @@ template $Preferences : Adw.PreferencesDialog {
 
         Adw.PreferencesGroup {
 
+            title: _("Board");
+
+            [header-suffix]
+            Gtk.Button general_board_apply_btn {
+                label: "Apply";
+                clicked => $on_general_board_apply();
+                styles ["suggested-action"]
+            }
+
+            Adw.ComboRow board_orientation_row {
+
+                title: _("Orientation");
+
+                model: Gtk.StringList {
+                    strings [_("Horizontal"), _("Vertical")]
+                };
+
+                notify::selected => $on_general_board_changed();
+                
+            }
+
+            Adw.SpinRow board_tile_size_row {
+
+                title: _("Tile fixed width/height size");
+                subtitle: _("Size of a fixed axis, dependant on board orientation");
+
+                adjustment: Gtk.Adjustment {
+                    value: 180;
+                    lower: 60;
+                    upper: 600;
+                    step-increment: 10;
+                    page-increment: 100;
+                    page-size: 0;
+                };
+
+                changed => $on_general_board_changed();
+
+            }
+
+            Adw.SpinRow board_tile_min_preview_row {
+
+                title: _("Tile min width/height preview size");
+                subtitle: _("Below this value, dependant on board orientation, higher resolution images will be used as previews");
+
+                adjustment: Gtk.Adjustment {
+                    value: 120;
+                    lower: 20;
+                    upper: 600;
+                    step-increment: 10;
+                    page-increment: 100;
+                    page-size: 0;
+                };
+
+                changed => $on_general_board_changed();
+
+            }
+
+        }
+
+        Adw.PreferencesGroup {
+
             Adw.ActionRow {
 
                 title: _("Confguration File");
@@ -47,7 +108,9 @@ template $Preferences : Adw.PreferencesDialog {
     }
 
     Adw.PreferencesPage {
+
         title: _("Providers");
+
     }
 
     Adw.PreferencesPage {

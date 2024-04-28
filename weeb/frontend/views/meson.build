@@ -7,6 +7,7 @@ weeb_sources = [
     'preferences.py',
     'board.py',
     'tile.py',
+    'flow_grid.py',
 ]
 
 install_data(weeb_sources, install_dir: viewsdir)

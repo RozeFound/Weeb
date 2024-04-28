@@ -20,23 +20,13 @@ template $Board : Adw.Bin {
 
             visible: false;
 
-            Gtk.FlowBox flow {
+            margin-start: 5;
+            margin-end: 5;
 
-                row-spacing: 5;
-                column-spacing: 5;
-                margin-top: 5;
-                margin-start: 5;
-                margin-bottom: 5;
-                margin-end: 5;
-                homogeneous: true;
-                valign: start;
-                halign: center;
-                selection-mode: none;
+            propagate-natural-height: true;
+            propagate-natural-width: true;
 
-                min-children-per-line: 5;
-                max-children-per-line: bind template.items_per_line;
-
-            }
+            $FlowGrid flow {}
 
         }
 
