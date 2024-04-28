@@ -6,4 +6,4 @@ weeb_sources = [
     'stream_image.py',
 ]
 
-install_data(weeb_sources, install_dir: viewsdir)
+install_data(weeb_sources, install_dir: widgetsdir)

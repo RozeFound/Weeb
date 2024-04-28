@@ -24,7 +24,7 @@ from weeb.backend.primitives import Asset
 from weeb.backend.utils.expected import Expected
 from weeb.backend.providers_manager import ProvidersManager
 
-from weeb.frontend.views.flow_grid import FlowGrid
+from weeb.frontend.widgets.flow_grid import FlowGrid
 from weeb.frontend.views.tile import Tile
 
 @Gtk.Template(resource_path=f"{root}/ui/board.ui")

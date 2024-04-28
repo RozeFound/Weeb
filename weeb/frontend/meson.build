@@ -10,6 +10,7 @@ configure_file(
 )
 
 subdir('views')
+subdir('widgets')
 
 weeb_sources = [
   '__init__.py',
