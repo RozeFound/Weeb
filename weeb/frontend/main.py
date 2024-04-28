@@ -46,9 +46,10 @@ class WeebApplication(Adw.Application):
         We raise the application's main window, creating it if
         necessary.
         """
-        self.win = self.props.active_window
-        if not self.win: self.win = WeebWindow(application=self)
-        self.win.present()
+        self.window = self.props.active_window
+        if not self.window:
+            self.window = WeebWindow(application=self)
+        self.window.present()
 
         self.create_action('quit', ['<primary>q'])
         self.create_action('about')
@@ -57,7 +58,9 @@ class WeebApplication(Adw.Application):
 
     def on_quit_action(self, *args):
         """Callback for the app.quit action."""
-        self.win.on_close_request(*args)
+        if hasattr(self, 'preferences'): self.preferences.close()
+        if hasattr(self, 'window'): self.window.close()
+        self.quit()
 
     def on_about_action(self, *args):
         """Callback for the app.about action."""
@@ -67,13 +70,12 @@ class WeebApplication(Adw.Application):
                                 version=version,
                                 developers=['RozeFound'],
                                 copyright='© 2024 RozeFound')
-        about.present(self.win)
+        about.present(self.window)
 
     def on_preferences_action(self, *args):
         """Callback for the app.preferences action."""
-        if not hasattr(self, "preferences"):
-            self.preferences = Preferences(application=self)
-        self.preferences.present(self.win)
+        self.preferences = Preferences(application=self)
+        self.preferences.present(self.window)
 
     def create_action(self, name: str, shortcuts: list[str] = None, scope: object = None) -> None:
 

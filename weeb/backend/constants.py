@@ -19,4 +19,7 @@
 
 app_id = '@APP_ID@'
 version = '@APP_VERSION@'
+build_env = '@BUILD_ENV@'
+
+debug = build_env == 'debug'
 root = '/' + app_id.replace('.', '/')

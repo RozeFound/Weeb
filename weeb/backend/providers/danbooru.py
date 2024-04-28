@@ -23,11 +23,13 @@ from typing import Callable
 from httpx import Response
 from weeb.backend.utils.threading import Expected
 from weeb.backend.primitives import Asset, Booru, Variant
+from weeb.backend.constants import debug
 
 class DanBooru(Booru):
 
     def __init__(self) -> None:
-        super().__init__(name="DanBooru", base_url="https://danbooru.donmai.us")
+        base_url = "https://testbooru.donmai.us" if debug else "https://danbooru.donmai.us"
+        super().__init__(name="DanBooru", base_url=base_url)
 
         self.params = { 
             "login": self.settings.get(f"providers/{self.name}/login"),
@@ -102,7 +104,7 @@ class DanBooru(Booru):
             
         
         self.params["tags"] = " ".join(tags)
-        url = "https://testbooru.donmai.us/posts.json"
+        url = self.base_url + "/posts.json"
 
         self.downloader.get_async(url, helper, params=self.params)
 

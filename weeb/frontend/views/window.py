@@ -20,7 +20,7 @@
 import logging
 from gi.repository import Adw, Gtk
 
-from weeb.backend.constants import root
+from weeb.backend.constants import root, debug
 from weeb.backend.settings import Settings
 from weeb.frontend.views.board import Board
 
@@ -45,10 +45,11 @@ class WeebWindow(Adw.ApplicationWindow):
         self.connect("close_request", self.on_close_request)
         self.connect("unrealize", self.on_unrealize)
 
-    def on_close_request(self, *args) -> None: # Called twice(?)
+        if debug: self.add_css_class("devel")
+
+    def on_close_request(self, *args) -> None:
         """Callback for the win.close_request event."""
         self.settings.close()
-        self.close()
 
     def on_unrealize(self, *args) -> None:
         """Callback for the win.unrealize event."""

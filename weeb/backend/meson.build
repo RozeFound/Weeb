@@ -5,7 +5,8 @@ config_file = configure_file(
   output: 'constants.py',
   configuration: configuration_data({
     'APP_ID': APPLICATION_ID,
-    'APP_VERSION': meson.project_version()
+    'APP_VERSION': meson.project_version(),
+    'BUILD_ENV': 'debug',
   }),
   install: true,
   install_dir: backenddir
