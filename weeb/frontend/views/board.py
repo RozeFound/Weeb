@@ -45,7 +45,7 @@ class Board(Adw.Bin):
 
         self.manager = ProvidersManager()
 
-        GLib.timeout_add_seconds(2, self.search_by_tags, ["1girl", "1boy"])
+        GLib.timeout_add_seconds(2, self.search_by_tags, ["1girl", "1boy", "rating:sensitive"])
 
     def search_by_tags(self, tags: list[str]) -> None:
 
