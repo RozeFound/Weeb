@@ -20,7 +20,7 @@
 from collections import defaultdict
 import json, logging, pathlib, enum
 from typing import Any, Callable, Optional
-from gi.repository import Gio
+from gi.repository import Gio, Gtk
 
 from weeb.backend.constants import app_id
 from weeb.backend.utils.paths import Paths
@@ -28,8 +28,7 @@ from weeb.backend.utils.singleton import Singleton
 
 class Priority(enum.Enum):
     LOW = 0
-    NORMAL = 1
-    HIGH = 2
+    HIGH = 1
 
 class _PartialGSettings:
 
@@ -88,24 +87,23 @@ class Settings(_PartialGSettings, metaclass=Singleton):
         except OSError as e:
             logging.error(f"Failed to write config file: {e}")
 
-    def on_changed(self, key: str) -> None:
+    def on_changed(self, changed_key: str, changed_value: Any) -> None:
+        """
+        Allows for partial subs like this:
+
+        >>> settings.connect("proxy", callback)
+
+        The callback will trigger if any of proxy subfields are changed
+        """
 
         self.write(self.config_path)
 
-        if key not in self.subscribers:
-            return
+        for key, callbacks in self.subscribers.items():
+            if key not in changed_key: continue
 
-        callbacks = self.subscribers.get(key)
-        value = self.get(key)
+            for callback in callbacks:
+                callback(changed_value)
 
-        for priority, callback in callbacks:
-            if priority == Priority.HIGH: callback(value)
-
-        for priority, callback in callbacks:
-            if priority == Priority.NORMAL: callback(value)
-
-        for priority, callback in callbacks:
-            if priority == Priority.LOW: callback(value)
 
     def _get_path(self, path: str, default: Any) -> Optional[Any]:
 
@@ -147,10 +145,12 @@ class Settings(_PartialGSettings, metaclass=Singleton):
                 self._set_path(key, value) 
             else: self.config[key] = value
 
-            self.on_changed(key)
+            self.on_changed(key, value)
 
         return old_value
 
-    def subscribe(self, key: str, callback: Callable, priority: Priority = Priority.NORMAL) -> None:
-        self.subscribers[key].append((priority, callback))
+    def connect(self, key: str, callback: Callable, priority: Priority = Priority.LOW) -> None:
+        if priority == Priority.HIGH:
+            self.subscribers[key].insert(0, callback)
+        else: self.subscribers[key].append(callback)
 

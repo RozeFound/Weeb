@@ -33,7 +33,7 @@ class Downloader(metaclass=Singleton):
 
         self.settings = Settings()
 
-        self.settings.subscribe("proxy/uri", self.create_client, Priority.HIGH)
+        self.settings.connect("proxy/uri", self.create_client, Priority.HIGH)
 
         self.create_client(self.settings.get("proxy/uri"))
 

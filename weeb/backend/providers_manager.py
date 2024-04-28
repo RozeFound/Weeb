@@ -29,7 +29,7 @@ class ProvidersManager:
     def __init__(self) -> None:
         
         self.settings = Settings()
-        self.settings.subscribe("proxy/uri", lambda *args: self.test_stability())
+        self.settings.connect("proxy/uri", lambda *args: self.test_stability())
 
         self.providers: list[Booru] = [DanBooru()]
         self.test_stability()
