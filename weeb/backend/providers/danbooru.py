@@ -31,11 +31,13 @@ class DanBooru(Booru):
         base_url = "https://testbooru.donmai.us" if debug else "https://danbooru.donmai.us"
         super().__init__(name="DanBooru", base_url=base_url)
 
-        self.params = { 
-            "login": self.settings.get(f"providers/{self.name}/login"),
-            "api_key": self.settings.get(f"providers/{self.name}/api_key"),
-            "limit": 30
-        }
+        self.params = { "limit": 30 }
+
+        if auth := self.settings.get(f"providers/{self.name}/auth"):
+            login, api_key = auth.values()
+            if login and api_key:
+                self.params["login"] = login
+                self.params["api_key"] = api_key
 
     def test_availability(self) -> Expected:
 
