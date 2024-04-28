@@ -4,7 +4,46 @@ using Adw 1;
 template $Preferences : Adw.PreferencesDialog {
 
     Adw.PreferencesPage {
+
         title: _("General");
+
+        Adw.PreferencesGroup {
+
+            Adw.ActionRow {
+
+                title: _("Confguration File");
+
+                [suffix]
+                Gtk.Button open_config_file_btn {
+                    valign: center;
+                    tooltip-text: _("Open config file");
+                    icon-name: "document-open-symbolic";
+                }
+
+                [suffix]
+                Gtk.Button open_config_folder_btn {
+                    valign: center;
+                    tooltip-text: _("Open config folder");
+                    icon-name: "folder-open-symbolic";
+                }
+
+                [suffix]
+                Gtk.Button delete_config_file_btn {
+                    valign: center;
+                    Adw.ButtonContent {
+                        label: _("Delete");
+                        icon-name: "edit-delete-symbolic";
+                    }
+                    tooltip-text: _("Delete config file");
+                    styles ["destructive-action"]
+
+                    clicked => $on_delete_config_file_clicked();
+                }
+
+            }
+
+        }
+        
     }
 
     Adw.PreferencesPage {

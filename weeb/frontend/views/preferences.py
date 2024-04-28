@@ -28,6 +28,10 @@ class Preferences(Adw.PreferencesDialog):
 
     __gtype_name__ = "Preferences"
 
+    open_config_file_btn: Gtk.Button = Gtk.Template.Child()
+    open_config_folder_btn: Gtk.Button = Gtk.Template.Child()
+    delete_config_file_btn: Gtk.Button = Gtk.Template.Child()
+
     proxy_type_row: Adw.ComboRow = Gtk.Template.Child()
     proxy_host_row: Adw.EntryRow = Gtk.Template.Child()
     proxy_port_btn: Gtk.SpinButton = Gtk.Template.Child() 
@@ -44,6 +48,12 @@ class Preferences(Adw.PreferencesDialog):
 
         self.app = kwargs.get("application")
 
+        self.open_config_file_btn.connect("clicked", 
+            lambda *args: self.settings.open_file(self.app.window))
+
+        self.open_config_folder_btn.connect("clicked",
+            lambda *args: self.settings.open_folder(self.app.window))
+
         self.proxy_type_row.set_selected(self.settings.get("proxy/type", 0))
         self.proxy_host_row.set_text(self.settings.get("proxy/host", "127.0.0.1"))
         self.proxy_port_btn.set_value(self.settings.get("proxy/port", 8080))
@@ -55,6 +65,26 @@ class Preferences(Adw.PreferencesDialog):
 
         self.proxy_general_apply_btn.set_sensitive(False)
         self.proxy_credentials_apply_btn.set_sensitive(False)
+
+    @Gtk.Template.Callback()
+    def on_delete_config_file_clicked(self, *args) -> None:
+
+        def on_response_selected(dialog: Adw.Dialog, task) -> None:
+            response = dialog.choose_finish(task)
+            if response == "delete": 
+                self.settings.delete_file()
+        
+        dialog = Adw.AlertDialog(
+            heading="Are you sure?",
+            body="You are going to delete the file containing all your data.\nIt will reset all the changes you made.",
+            close_response="cancel")
+            
+        dialog.add_response("cancel", "Cancel")
+        dialog.add_response("delete", "Delete")
+
+        dialog.set_response_appearance("delete", Adw.ResponseAppearance.DESTRUCTIVE)
+
+        dialog.choose(self, None, on_response_selected)
 
     @Gtk.Template.Callback()
     def on_proxy_type_selected(self, *args) -> None:

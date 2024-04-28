@@ -55,7 +55,22 @@ class Settings(_PartialGSettings, metaclass=Singleton):
         self.config_path = Paths.get("config/settings.json", parents=True)
         self.config: dict = self.read(self.config_path)
 
+        file = Gio.File.new_for_path(self.config_path.as_posix())
+        self.launcher = Gtk.FileLauncher(file=file)
+
         self._is_closed = False
+
+    def open_file(self, parent: Optional[Gtk.Window] = None) -> None:
+        if self.config_path.exists():
+            self.launcher.launch(parent)
+
+    def open_folder(self, parent: Optional[Gtk.Window] = None) -> None:
+        if self.config_path.exists():
+            self.launcher.open_containing_folder(parent)
+
+    def delete_file(self) -> None:
+        self.config = dict()
+        self.config_path.unlink()
 
     def close(self) -> None:
         if not self._is_closed:
