@@ -25,10 +25,11 @@ template $WeebWindow : Adw.ApplicationWindow {
             centering-policy: strict;
             styles ["flat"]
 
-            Gtk.ToggleButton search_button {
-                tooltip-text: _("Search");
-                icon-name: "system-search-symbolic";
-                action-name: "win.toggle_search";
+            [start]
+            ToggleButton show_sidebar_btn {
+                icon-name: "dock-left";
+                tooltip-text: _("Toggle Sidebar");
+                active: bind split_view.show-sidebar;
             }
 
             [end]
@@ -40,38 +41,19 @@ template $WeebWindow : Adw.ApplicationWindow {
 
         }
 
-        [top]
-        Gtk.SearchBar search_bar {
-            search-mode-enabled: bind search_button.active bidirectional;
-            
-            Gtk.Box {
+        Adw.OverlaySplitView split_view {
 
-                spacing: 4;
+            show-sidebar: bind show_sidebar_btn.active;
+            collapsed: true;
 
-                SearchEntry search_entry {
-                    placeholder-text: _("Search");
-                    search-changed => $on_searchentry_search_changed();
-                    hexpand: true;
+            sidebar: Adw.StatusPage {
+                title: _("Tags View");
+            };
 
-                    ShortcutController {
-                        Shortcut {
-                            trigger: "Escape";
-                            action: "action(win.toggle_search)";
-                        }
-                    }
-                }
-
-                Gtk.DropDown rating {
-                    model: Gtk.StringList {
-                        strings [_("Safe"), _("Questionable"), _("Explicit")]
-                    };
-                }
-
-            }
-
+            content: $Board board {};
         }
 
-        $Board board {}
+        
 
     }
 

@@ -54,7 +54,7 @@ class WeebApplication(Adw.Application):
         self.create_action('quit', ['<primary>q'])
         self.create_action('about')
         self.create_action('preferences', ["<primary>comma"])
-        self.create_action('toggle_search', ["<primary>f"], self.win)
+        self.create_action('toggle_sidebar', ["<primary>s"], self.window)
 
     def on_quit_action(self, *args):
         """Callback for the app.quit action."""

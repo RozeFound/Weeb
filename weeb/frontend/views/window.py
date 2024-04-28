@@ -28,9 +28,7 @@ from weeb.frontend.views.board import Board
 class WeebWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'WeebWindow'
 
-    search_bar: Gtk.SearchBar = Gtk.Template.Child()
-    search_entry: Gtk.SearchEntry = Gtk.Template.Child()
-    
+    split_view: Adw.OverlaySplitView = Gtk.Template.Child()
     board: Board = Gtk.Template.Child()
 
     app = Gtk.Application.get_default()
@@ -61,17 +59,5 @@ class WeebWindow(Adw.ApplicationWindow):
         self.settings.set_int('window-height', height)
         self.settings.set_boolean('window-maximized', maximized)
 
-    def on_toggle_search_action(self, *args) -> None:
-        """Callback for the win.toggle_search action."""
-
-        search_mode = not self.search_bar.get_search_mode()
-        self.search_bar.set_search_mode(search_mode)
-
-        if search_mode:
-            self.set_focus(self.search_entry)
-
-        self.search_entry.set_text("")
-
-    @Gtk.Template.Callback()
-    def on_searchentry_search_changed(self, *args) -> None:
-        self.board.search_by_tags(self.search_entry.get_text().split())
+    def on_toggle_sidebar_action(self, *args) -> None:
+        self.split_view.set_show_sidebar(not self.split_view.get_show_sidebar())
