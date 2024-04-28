@@ -18,13 +18,15 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Any, Callable
+
 from weeb.backend.settings import Settings
 from weeb.backend.utils.expected import Expected
-from weeb.backend.primitives import Asset, Booru
+from weeb.backend.utils.singleton import Singleton
 
+from weeb.backend.primitives import Asset, Booru
 from weeb.backend.providers.danbooru import DanBooru
 
-class ProvidersManager:
+class ProvidersManager(metaclass=Singleton):
 
     def __init__(self) -> None:
         

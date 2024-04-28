@@ -51,7 +51,7 @@ class Preferences(Adw.PreferencesDialog):
     def __init__(self, **kwargs):
         super().__init__()
 
-        self.app = kwargs.get("application")
+        self.app: Adw.Application = kwargs.get("application")
 
         self.open_config_file_btn.connect("clicked", 
             lambda *args: self.settings.open_file(self.app.window))

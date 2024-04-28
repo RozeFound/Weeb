@@ -17,8 +17,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+from abc import ABC
 from dataclasses import dataclass
-from typing import Callable
+from typing import Callable, Optional
 
 from weeb.backend.downloader import Downloader
 from weeb.backend.settings import Settings
@@ -43,11 +44,11 @@ class Asset:
     variants: list[Variant]
 
     preview: Variant
-    sample: Variant
+    sample: Optional[Variant]
     original: Variant
 
 
-class Booru:
+class Booru(ABC):
 
     def __init__(self, name: str, base_url: str) -> None:
 

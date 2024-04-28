@@ -55,19 +55,13 @@ class Downloader(metaclass=Singleton):
         self.client = httpx.Client(transport=cache_transport)
 
     def get(self, url: str, **kwargs) -> httpx.Response:
-        try:
-            return self.client.get(url, **kwargs)
-        except httpx.HTTPError as e:
-            return e.response
+        return self.client.get(url, **kwargs)
 
     def get_async(self, url: str, callback: Callable[[httpx.Response], Any], **kwargs) -> Expected[httpx.Response]:
         return run_in_thread(self.get, callback, url, **kwargs)
 
     def stream(self, url: str, method: str = "GET", **kwargs):
-        try:
-            return self.client.stream(method, url, **kwargs)
-        except httpx.HTTPError as e:
-            return e.response
+        return self.client.stream(method, url, **kwargs)
 
     def stream_async(self, url: str, callback: Callable[[httpx.Response], Any], **kwargs) -> Expected[httpx.Response]:
         return run_in_thread(self.stream, callback, url, **kwargs)
@@ -80,12 +74,12 @@ class Downloader(metaclass=Singleton):
 
         e_bytes: Expected = None
 
-        def helper(url: str, callback, **kwargs):
-            with self.stream(url, **kwargs) as response:
+        def helper(url: str, callback: Callable[[bytes], Any], **kwargs):
+            with self.stream(url, "GET", **kwargs) as response:
                 for chunk in response.iter_bytes():
                     callback(chunk)
 
-        if stream: e_bytes = run_in_thread(helper, url, **kwargs)
+        if stream: e_bytes = run_in_thread(helper, None, url, callback, **kwargs)
         else: e_bytes = run_in_thread(self.download, callback, url, False, **kwargs)
 
         return e_bytes

@@ -21,7 +21,7 @@ import logging
 from typing import Callable
 
 from httpx import Response
-from weeb.backend.utils.threading import Expected
+from weeb.backend.utils.expected import Expected
 from weeb.backend.primitives import Asset, Booru, Variant
 from weeb.backend.constants import debug
 
@@ -57,17 +57,16 @@ class DanBooru(Booru):
         variants: list[Variant] = []
 
         sample: Variant = None
-        original: Variant = None
 
         for variant in media_asset.get("variants", []):
+            
             variants.append(Variant(
                 width=variant.get("width"),
                 height=variant.get("height"),
                 url=variant.get("url")))
+
             if variant.get("type") == "sample":
                 sample: Variant = variants[-1]
-            if variant.get("type") == "original":
-                original: Variant = variants[-1]
 
         if not variants: return None
 
@@ -77,7 +76,7 @@ class DanBooru(Booru):
             variants=variants,
             preview=variants[0],
             sample=sample,
-            original=original
+            original=variants[-1]
         )
 
         return asset

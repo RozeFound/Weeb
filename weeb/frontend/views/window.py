@@ -17,7 +17,6 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import logging
 from gi.repository import Adw, Gtk
 
 from weeb.backend.constants import root, debug
@@ -31,7 +30,7 @@ class WeebWindow(Adw.ApplicationWindow):
     split_view: Adw.OverlaySplitView = Gtk.Template.Child()
     board: Board = Gtk.Template.Child()
 
-    app = Gtk.Application.get_default()
+    app = Adw.Application.get_default()
     settings = Settings()
 
     def __init__(self, **kwargs) -> None:
