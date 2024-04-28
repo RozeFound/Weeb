@@ -21,7 +21,7 @@ import logging, math
 from gi.repository import Gtk
 
 from weeb.backend.constants import root
-from weeb.backend.primitives import Asset
+from weeb.backend.primitives import Asset, Variant
 from weeb.backend.settings import Settings
 from weeb.frontend.widgets.stream_image import StreamImage
 
@@ -35,38 +35,44 @@ class Tile(Gtk.Button):
     settings = Settings()
 
     def __init__(self, asset: Asset, **kwargs):
+        super().__init__(**kwargs)
 
         self.asset = asset
+        self.variant = self.get_preferred_variant(asset)
+
+        self.set_size_request(*self.get_preferred_size(self.variant))
+        self.picture.set_paintable(StreamImage(self.variant, preload=False))
+
+    def get_preferred_variant(self, asset: Asset) -> Variant:
 
         variant_index = 0
-        variant = asset.variants[variant_index]
 
-        image_orientation = int(variant.width < variant.height)
+        image_orientation = int(asset.preview.width < asset.preview.height)
         board_orientation = self.settings.get("board/orientation", 0)
 
-        tile_size = self.settings.get("board/tile/size", 180)
         min_preview = self.settings.get("board/tile/min_preview", 120)
 
-        width = height = tile_size
-
         if image_orientation == board_orientation:
-            while variant_index < len(asset.variants):
+
+            for variant in asset.variants:
                 axis = variant.width if image_orientation else variant.height
                 if axis < min_preview and not variant.url.endswith((".mp4", ".gif")):
-                   variant = asset.variants[variant_index]; variant_index += 1
+                   variant_index += 1
                 else: break
 
-        self.chosen = variant
+        return asset.variants[variant_index]
+
+    def get_preferred_size(self, variant: Variant) -> tuple[int, int]:
+
+        width = height = tile_size = self.settings.get("board/tile/size", 180)
+        board_orientation = self.settings.get("board/orientation", 0)
 
         if board_orientation == Gtk.Orientation.HORIZONTAL:
             width = math.floor((variant.width / variant.height) * tile_size)
         elif board_orientation == Gtk.Orientation.VERTICAL:
             height = math.floor((variant.height / variant.width) * tile_size)
 
-        super().__init__(**kwargs, width_request=width, height_request=height)
-
-        image = StreamImage(variant, preload=False)
-        self.picture.set_paintable(image)
+        return width, height
 
     @Gtk.Template.Callback()
     def on_clicked(self, *args) -> None:
@@ -78,7 +84,7 @@ class Tile(Gtk.Button):
             width, height, url = variant.width, variant.height, variant.url
             logging.info(f"Variant: {width}x{height} ({url})")
 
-        width, height, url = self.chosen.width, self.chosen.height, self.chosen.url
+        width, height, url = self.variant.width, self.variant.height, self.variant.url
         logging.info(f"Chosen: {width}x{height} ({url})")
 
         logging.info(f"Tile size: {self.get_allocated_width()}x{self.get_allocated_height()}")
