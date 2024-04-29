@@ -18,13 +18,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from typing import Any, Callable
-import httpx, hishel
 
-from weeb.backend.utils.expected import Expected
-from weeb.backend.utils.threading import run_in_thread
-from weeb.backend.utils.singleton import Singleton
+import hishel, httpx
 
 from weeb.backend.settings import Priority, Settings
+from weeb.backend.utils.expected import Expected
+from weeb.backend.utils.singleton import Singleton
+from weeb.backend.utils.threading import run_in_thread
 
 
 class Downloader(metaclass=Singleton):

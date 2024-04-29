@@ -19,12 +19,12 @@
 
 from typing import Any, Callable
 
+from weeb.backend.primitives import Asset, Booru
+from weeb.backend.providers.danbooru import DanBooru
 from weeb.backend.settings import Settings
 from weeb.backend.utils.expected import Expected
 from weeb.backend.utils.singleton import Singleton
 
-from weeb.backend.primitives import Asset, Booru
-from weeb.backend.providers.danbooru import DanBooru
 
 class ProvidersManager(metaclass=Singleton):
 

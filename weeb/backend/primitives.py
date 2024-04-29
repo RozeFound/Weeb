@@ -25,6 +25,7 @@ from weeb.backend.downloader import Downloader
 from weeb.backend.settings import Settings
 from weeb.backend.utils.expected import Expected
 
+
 @dataclass(init=True)
 class Variant:
 

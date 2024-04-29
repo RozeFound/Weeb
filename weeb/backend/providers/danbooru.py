@@ -21,9 +21,11 @@ import logging
 from typing import Callable
 
 from httpx import Response
-from weeb.backend.utils.expected import Expected
-from weeb.backend.primitives import Asset, Booru, Variant
+
 from weeb.backend.constants import debug
+from weeb.backend.primitives import Asset, Booru, Variant
+from weeb.backend.utils.expected import Expected
+
 
 class DanBooru(Booru):
 

@@ -18,10 +18,12 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import logging, subprocess
-from gi.repository import Gtk, Adw
+
+from gi.repository import Adw, Gtk
 
 from weeb.backend.constants import root
 from weeb.backend.settings import Settings
+
 
 @Gtk.Template(resource_path=f"{root}/ui/preferences.ui")
 class Preferences(Adw.PreferencesDialog):

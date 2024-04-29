@@ -17,7 +17,8 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import os, pathlib, functools
+import functools, os, pathlib
+
 
 class Paths:
 

@@ -19,9 +19,10 @@
 
 from gi.repository import Adw, Gtk
 
-from weeb.backend.constants import root, debug
+from weeb.backend.constants import debug, root
 from weeb.backend.settings import Settings
 from weeb.frontend.views.board import Board
+
 
 @Gtk.Template(resource_path=f'{root}/ui/window.ui')
 class WeebWindow(Adw.ApplicationWindow):

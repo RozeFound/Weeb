@@ -17,12 +17,13 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import functools, threading, traceback
 from typing import Callable, Optional
-import threading, functools, traceback
+
+from gi.repository import GLib
 
 from weeb.backend.utils.expected import Expected
 
-from gi.repository import GLib
 
 class GThread(threading.Thread):
     """A Thread class that can be used in GTK+ applications to run functions in a background thread"""

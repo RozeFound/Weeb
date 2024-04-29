@@ -18,12 +18,14 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 import logging, math
+
 from gi.repository import Gtk
 
 from weeb.backend.constants import root
 from weeb.backend.primitives import Asset, Variant
 from weeb.backend.settings import Settings
 from weeb.frontend.widgets.stream_image import StreamImage
+
 
 @Gtk.Template(resource_path=f"{root}/ui/tile.ui")
 class Tile(Gtk.Button):

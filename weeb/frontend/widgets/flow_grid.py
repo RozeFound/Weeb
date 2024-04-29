@@ -21,6 +21,7 @@ from gi.repository import Gtk
 
 from weeb.backend.settings import Settings
 
+
 class FlowGridChild(Gtk.Box):
 
     __gtype_name__ = "FlowGridChild"

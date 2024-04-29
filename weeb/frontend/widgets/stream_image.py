@@ -17,10 +17,11 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import GObject, Gdk, Gtk, Graphene, GLib, GdkPixbuf
+from gi.repository import Gdk, GdkPixbuf, GLib, GObject, Graphene, Gtk
 
-from weeb.backend.primitives import Variant
 from weeb.backend.downloader import Downloader
+from weeb.backend.primitives import Variant
+
 
 class StreamImage(GObject.GObject, Gdk.Paintable):
 

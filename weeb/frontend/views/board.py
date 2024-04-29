@@ -17,15 +17,15 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Gtk, Adw, GLib
+from gi.repository import Adw, GLib, Gtk
 
 from weeb.backend.constants import root
 from weeb.backend.primitives import Asset
-from weeb.backend.utils.expected import Expected
 from weeb.backend.providers_manager import ProvidersManager
-
-from weeb.frontend.widgets.flow_grid import FlowGrid
+from weeb.backend.utils.expected import Expected
 from weeb.frontend.views.tile import Tile
+from weeb.frontend.widgets.flow_grid import FlowGrid
+
 
 @Gtk.Template(resource_path=f"{root}/ui/board.ui")
 class Board(Adw.Bin):

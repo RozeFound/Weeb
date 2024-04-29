@@ -17,19 +17,18 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import sys
-import gi
+import logging, sys
 
-gi.require_version('Gtk', '4.0')
-gi.require_version('Adw', '1')
+from gi import require_versions
 
-import logging
+require_versions({'Gtk': '4.0', 'Adw': '1'})
 
-from gi.repository import Gio, Adw
+from gi.repository import Adw, Gio
 
-from weeb.frontend.views.window import WeebWindow
+from weeb.backend.constants import app_id, root, version
 from weeb.frontend.views.preferences import Preferences
-from weeb.backend.constants import app_id, version, root
+from weeb.frontend.views.window import WeebWindow
+
 
 class WeebApplication(Adw.Application):
     """The main application singleton class."""

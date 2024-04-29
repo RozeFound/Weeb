@@ -17,14 +17,16 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import enum, json, logging, pathlib
 from collections import defaultdict
-import json, logging, pathlib, enum
 from typing import Any, Callable, Optional
+
 from gi.repository import Gio, Gtk
 
 from weeb.backend.constants import app_id
 from weeb.backend.utils.paths import Paths
 from weeb.backend.utils.singleton import Singleton
+
 
 class Priority(enum.Enum):
     LOW = 0
