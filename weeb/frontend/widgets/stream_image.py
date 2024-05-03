@@ -24,7 +24,6 @@ from weeb.backend.primitives import Variant
 
 
 class StreamImage(GObject.GObject, Gdk.Paintable):
-
     __gtype_name__ = "StreamImage"
 
     def __init__(self, variant: Variant, early_init: bool = False, preload: bool = False) -> None:

@@ -23,7 +23,6 @@ from weeb.backend.settings import Settings
 
 
 class FlowGridChild(Gtk.Box):
-
     __gtype_name__ = "FlowGridChild"
 
     settings = Settings()
@@ -54,7 +53,6 @@ class FlowGridChild(Gtk.Box):
         super().append(widget)
 
 class FlowGrid(Gtk.Box):
-
     __gtype_name__ = "FlowGrid"
 
     settings = Settings()

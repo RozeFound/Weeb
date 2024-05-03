@@ -29,7 +29,6 @@ from weeb.frontend.widgets.flow_grid import FlowGrid
 
 @Gtk.Template(resource_path=f"{root}/ui/board.ui")
 class Board(Adw.Bin):
-
     __gtype_name__ = "Board"
 
     placeholder: Adw.StatusPage = Gtk.Template.Child()

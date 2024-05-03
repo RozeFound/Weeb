@@ -29,7 +29,6 @@ from weeb.frontend.widgets.stream_image import StreamImage
 
 @Gtk.Template(resource_path=f"{root}/ui/tile.ui")
 class Tile(Gtk.Button):
-
     __gtype_name__ = "Tile"
 
     picture: Gtk.Picture = Gtk.Template.Child()
