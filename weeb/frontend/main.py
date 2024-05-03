@@ -73,7 +73,7 @@ class WeebApplication(Adw.Application):
 
     def on_preferences_action(self, *args):
         """Callback for the app.preferences action."""
-        self.preferences = Preferences(application=self)
+        self.preferences = Preferences()
         self.preferences.present(self.window)
 
     def create_action(self, name: str, shortcuts: list[str] = None, scope: object = None) -> None:
