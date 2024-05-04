@@ -116,3 +116,35 @@ class DanBooru(Booru):
         self.downloader.get_async(url, helper, params=self.params|params)
 
         return e_assets
+
+    def search_tags_async(self, query: str, callback: Callable) -> Expected[set[str]]:
+
+        e_tags = Expected(set())
+
+        def helper(e_response: Expected[Response]) -> None:
+
+            response = e_response.value
+
+            if response.status_code != 200:
+                e_tags.error(response.text)
+                return
+
+            for tag in response.json():
+                e_tags.value.add(tag["name"])
+
+            e_tags.finish()
+            callback(e_tags)
+
+
+        params = {
+            "search[name_or_alias_matches]": query + "*",
+            "search[order]": "count",
+            "search[hide_empty]": True,
+            "limit": 1000
+        }
+
+        url = self.base_url + "/tags.json"
+
+        self.downloader.get_async(url, helper, params=self.params|params)
+
+        return e_tags

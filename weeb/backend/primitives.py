@@ -76,7 +76,10 @@ class Booru(ABC):
         self.__is_alive = value
 
     def test_availability(self) -> Expected:
-    def search_assets_async(self, tags: list, callback: Callable) -> Expected[set[Asset]]:
+        raise NotImplementedError("Derived classes must implement this method")
 
-    def search_assets_by_tags_async(self, tags: list, callback: Callable) -> Expected[set[Asset]]:
-        pass
+    def search_assets_async(self, tags: list, callback: Callable) -> Expected[set[Asset]]:
+        raise NotImplementedError("Derived classes must implement this method")
+
+    def search_tags_async(self, query: str, callback: Callable) -> Expected[set[str]]:
+        raise NotImplementedError("Derived classes must implement this method")

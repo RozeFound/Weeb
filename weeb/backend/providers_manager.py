@@ -60,6 +60,30 @@ class ProvidersManager(metaclass=Singleton):
         for provider in self.providers:
             if not provider.is_alive: continue
             if e_assets.is_cancelled(): break
-            tasks.append(provider.search_assets_by_tags_async(tags, helper))
+            tasks.append(provider.search_assets_async(tags, helper))
 
         return e_assets
+
+    def search_tags_async(self, query: str, callback: Callable[[Expected[set[str]]], Any]) -> Expected[set[str]]:
+
+        tasks: list[Expected] = []
+
+        def on_cancel() -> None:
+            for task in tasks:
+                task.cancel()
+
+        e_tags: Expected[set[str]] = Expected(set(), on_cancel)
+
+        def helper(_e_tags: Expected[set[str]]) -> None:
+            e_tags.value |= _e_tags.value
+
+            if all(task.is_finished() for task in tasks):
+                e_tags.finish()
+                callback(e_tags)
+
+        for provider in self.providers:
+            if not provider.is_alive: continue
+            if e_tags.is_cancelled(): break
+            tasks.append(provider.search_tags_async(query, helper))
+
+        return e_tags
