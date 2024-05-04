@@ -33,7 +33,7 @@ class DanBooru(Booru):
         base_url = "https://testbooru.donmai.us" if debug else "https://danbooru.donmai.us"
         super().__init__(name="DanBooru", base_url=base_url)
 
-        self.params = { "limit": 30 }
+        self.params = dict()
 
         if auth := self.settings.get(f"providers/{self.name}/auth"):
             login, api_key = auth.values()
@@ -87,7 +87,7 @@ class DanBooru(Booru):
             
     def search_assets_async(self, tags: list, callback: Callable) -> Expected[set[Asset]]:
 
-        e_assets: Expected[set] = Expected(set())
+        e_assets = Expected(set())
 
         def helper(e_response: Expected[Response]) -> None:
 
@@ -106,9 +106,13 @@ class DanBooru(Booru):
             callback(e_assets)
             
         
-        self.params["tags"] = " ".join(tags)
+        params = {
+            "tags": " ".join(tags),
+            "limit": 30
+        }
+
         url = self.base_url + "/posts.json"
 
-        self.downloader.get_async(url, helper, params=self.params)
+        self.downloader.get_async(url, helper, params=self.params|params)
 
         return e_assets
