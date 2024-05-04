@@ -40,7 +40,7 @@ class ProvidersManager(metaclass=Singleton):
         for provider in self.providers:
             provider.test_availability()
 
-    def search_assets_by_tags_async(self, tags: list[str], callback: Callable[[Expected[set[Asset]]], Any]) -> Expected[set[Asset]]:
+    def search_assets_async(self, tags: list[str], callback: Callable[[Expected[set[Asset]]], Any]) -> Expected[set[Asset]]:
 
         tasks: list[Expected] = []
 

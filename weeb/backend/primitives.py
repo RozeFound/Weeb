@@ -76,7 +76,7 @@ class Booru(ABC):
         self.__is_alive = value
 
     def test_availability(self) -> Expected:
-        pass
+    def search_assets_async(self, tags: list, callback: Callable) -> Expected[set[Asset]]:
 
     def search_assets_by_tags_async(self, tags: list, callback: Callable) -> Expected[set[Asset]]:
         pass

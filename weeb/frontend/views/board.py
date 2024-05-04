@@ -49,7 +49,7 @@ class Board(Adw.Bin):
     def search_by_tags(self, tags: list[str]) -> None:
 
         def run_search() -> None:
-            self.e_search = self.manager.search_assets_by_tags_async(tags, self.populate_board)
+            self.e_search = self.manager.search_assets_async(tags, self.populate_board)
 
         if self.e_search is not None and self.e_search.is_running():
             self.e_search.on_finish(run_search)

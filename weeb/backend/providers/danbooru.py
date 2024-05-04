@@ -85,7 +85,7 @@ class DanBooru(Booru):
 
         return asset
             
-    def search_assets_by_tags_async(self, tags: list, callback: Callable) -> Expected[set[Asset]]:
+    def search_assets_async(self, tags: list, callback: Callable) -> Expected[set[Asset]]:
 
         e_assets: Expected[set] = Expected(set())
 
