@@ -62,7 +62,7 @@ class FlowGrid(Gtk.Box):
 
         self.set_orientation(not self.settings.get("board/orientation", 0))
 
-        self.children: list[FlowGridChild] = [FlowGridChild() for _ in range(4)]
+        self.children: list[FlowGridChild] = [FlowGridChild() for _ in range(3)]
         for child in self.children: super().append(child)
 
     def get_shortest_child(self) -> FlowGridChild:
