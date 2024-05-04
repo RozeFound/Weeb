@@ -28,20 +28,20 @@ from weeb.backend.utils.expected import Expected
 class GThread(threading.Thread):
     """A Thread class that can be used in GTK+ applications to run functions in a background thread"""
 
-    def __init__(self, target: Callable, result: Expected, callback: Optional[Callable] = None, *args, **kwargs) -> None:
+    def __init__(self, target: Callable, expected: Expected, callback: Optional[Callable] = None, *args, **kwargs) -> None:
 
         def handler(*args, **kwargs) -> None:
-            try: result.value = target(*args, **kwargs)
+            try: expected.value = target(*args, **kwargs)
             except Exception as e: 
                 traceback.print_exception(e)
-                result.set_error(e)
-                result.fail()
+                expected.set_error(e)
+                expected.fail()
 
-            if not result.is_cancelled() and not result.is_failed():
-                result.finish()
+            if not expected.is_cancelled() and not expected.is_failed():
+                expected.finish()
 
-            if callback and not result.is_cancelled():
-                callback(result)
+            if callback and not expected.is_cancelled():
+                GLib.idle_add(callback, expected)
 
         super().__init__(target=handler, args=args, kwargs=kwargs, daemon=True)
 
@@ -50,9 +50,9 @@ class GThread(threading.Thread):
 
 def run_in_thread(target: Callable,  callback: Optional[Callable] = None, *args, **kwargs) -> Expected:
 
-    result = Expected()
-    GThread(target, result, callback, *args, **kwargs)
-    return result
+    expected = Expected()
+    GThread(target, expected, callback, *args, **kwargs)
+    return expected
 
 def glib_idle(func: Callable) -> Callable:
     """Wraps a function in a GLib.idle_add() call"""
