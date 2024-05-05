@@ -65,13 +65,13 @@ class Tile(Gtk.Button):
 
     def get_preferred_size(self, variant: Variant) -> tuple[int, int]:
 
-        width = height = tile_size = self.settings.get("board/tile/size", 180)
+        width = height = self.settings.get("board/tile/size", 180)
         board_orientation = self.settings.get("board/orientation", 0)
 
         if board_orientation == Gtk.Orientation.HORIZONTAL:
-            width = math.floor((variant.width / variant.height) * tile_size)
+            width = math.floor((variant.width / variant.height) * height)
         elif board_orientation == Gtk.Orientation.VERTICAL:
-            height = math.floor((variant.height / variant.width) * tile_size)
+            height = math.floor((variant.height / variant.width) * width)
 
         return width, height
 
