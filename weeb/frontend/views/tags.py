@@ -51,9 +51,6 @@ class Tag(Gtk.FlowBoxChild):
         self.style = f"custom_color_{color_id}"
         self.add_css_class(self.style)
 
-        self.remove_btn.remove_css_class("image-button")
-        self.add_btn.remove_css_class("image-button")
-
         motion_controller = Gtk.EventControllerMotion.new()
         motion_controller.connect("enter", self.on_motion_enter)
         motion_controller.connect("leave", self.on_motion_leave)
