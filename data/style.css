@@ -1,0 +1,123 @@
+.item-label-child {
+    background-color: alpha(@colorAccent, 0.125);
+    border-radius: 6px;
+    padding: 3px 6px;
+    /* color: @colorAccent; */
+    font-weight: bold;
+}
+
+.small-button {
+    border-radius: 6px;
+    padding: 2px 2px;
+    font-weight: bold;
+}
+
+.small-label {
+    font-size: 0.95em;
+}
+
+.custom_color_1 {
+    background-color: alpha(@blue_1, 0.15);
+}
+.custom_color_2 {
+    background-color: alpha(@blue_2, 0.15);
+}
+.custom_color_3 {
+    background-color: alpha(@blue_3, 0.15);
+}
+.custom_color_4 {
+    background-color: alpha(@blue_4, 0.15);
+}
+.custom_color_5 {
+    background-color: alpha(@blue_5, 0.15);
+}
+.custom_color_6 {
+    background-color: alpha(@green_1, 0.15);
+}
+.custom_color_7 {
+    background-color: alpha(@green_2, 0.15);
+}
+.custom_color_8 {
+    background-color: alpha(@green_3, 0.15);
+}
+.custom_color_9 {
+    background-color: alpha(@green_4, 0.15);
+}
+.custom_color_10 {
+    background-color: alpha(@green_5, 0.15);
+}
+.custom_color_11 {
+    background-color: alpha(@yellow_1, 0.15);
+}
+.custom_color_12 {
+    background-color: alpha(@yellow_2, 0.15);
+}
+.custom_color_13 {
+    background-color: alpha(@yellow_3, 0.15);
+}
+.custom_color_14 {
+    background-color: alpha(@yellow_4, 0.15);
+}
+.custom_color_15 {
+    background-color: alpha(@yellow_5, 0.15);
+}
+.custom_color_16 {
+    background-color: alpha(@orange_1, 0.15);
+}
+.custom_color_17 {
+    background-color: alpha(@orange_2, 0.15);
+}
+.custom_color_18 {
+    background-color: alpha(@orange_3, 0.15);
+}
+.custom_color_19 {
+    background-color: alpha(@orange_4, 0.15);
+}
+.custom_color_20 {
+    background-color: alpha(@orange_5, 0.15);
+}
+.custom_color_21 {
+    background-color: alpha(@red_1, 0.15);
+}
+.custom_color_22 {
+    background-color: alpha(@red_2, 0.15);
+}
+.custom_color_23 {
+    background-color: alpha(@red_3, 0.15);
+}
+.custom_color_24 {
+    background-color: alpha(@red_4, 0.15);
+}
+.custom_color_25 {
+    background-color: alpha(@red_5, 0.15);
+}
+.custom_color_26 {
+    background-color: alpha(@purple_1, 0.15);
+}
+.custom_color_27 {
+    background-color: alpha(@purple_2, 0.15);
+}
+.custom_color_28 {
+    background-color: alpha(@purple_3, 0.15);
+}
+.custom_color_29 {
+    background-color: alpha(@purple_4, 0.15);
+}
+.custom_color_30 {
+    background-color: alpha(@purple_5, 0.15);
+}
+.custom_color_31 {
+    background-color: alpha(@brown_1, 0.15);
+}
+.custom_color_32 {
+    background-color: alpha(@brown_2, 0.15);
+}
+.custom_color_33 {
+    background-color: alpha(@brown_3, 0.15);
+}
+.custom_color_34 {
+    background-color: alpha(@brown_4, 0.15);
+}
+.custom_color_35 {
+    background-color: alpha(@brown_5, 0.15);
+}

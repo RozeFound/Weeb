@@ -1,0 +1,37 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $Tag : Gtk.FlowBoxChild {
+
+    halign: start;
+
+    styles ["item-label-child"]
+
+    Gtk.Grid {
+
+        column-spacing: 6;
+
+        Gtk.Label {
+            halign: start;
+            valign: center;
+            label: bind template.label;
+            styles ["small-label"]
+        }
+
+        Gtk.Button remove_btn {
+            visible: false;
+            valign: fill;
+            icon-name: "cross-large-circle-filled-symbolic";
+            styles ["small-button", "destructive-action"]
+        }
+
+        Gtk.Button add_btn {
+            visible: false;
+            valign: fill;
+            icon-name: "plus-large-circle-symbolic";
+            styles ["small-button", "suggested-action"]
+        }
+
+    }
+
+}

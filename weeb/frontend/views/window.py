@@ -22,6 +22,7 @@ from gi.repository import Adw, Gtk
 from weeb.backend.constants import debug, root
 from weeb.backend.settings import Settings
 from weeb.frontend.views.board import Board
+from weeb.frontend.views.tags import Tags
 
 
 @Gtk.Template(resource_path=f'{root}/ui/window.ui')
@@ -29,9 +30,10 @@ class WeebWindow(Adw.ApplicationWindow):
     __gtype_name__ = 'WeebWindow'
 
     split_view: Adw.OverlaySplitView = Gtk.Template.Child()
-    board: Board = Gtk.Template.Child()
 
-    app = Adw.Application.get_default()
+    board: Board = Gtk.Template.Child()
+    tags: Tags = Gtk.Template.Child()
+    
     settings = Settings()
 
     def __init__(self, **kwargs) -> None:

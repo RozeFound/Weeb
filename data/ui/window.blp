@@ -46,10 +46,7 @@ template $WeebWindow : Adw.ApplicationWindow {
             show-sidebar: bind show_sidebar_btn.active;
             collapsed: true;
 
-            sidebar: Adw.StatusPage {
-                title: _("Tags View");
-            };
-
+            sidebar: $Tags tags {};
             content: $Board board {};
         }
 

@@ -1,0 +1,103 @@
+using Gtk 4.0;
+using Adw 1;
+
+template $Tags : Gtk.Box {
+
+    orientation: vertical;
+    spacing: 10;
+
+    Gtk.Box {
+
+        orientation: vertical;
+        spacing: 10;
+
+        Gtk.Label {
+            label: _("Meta Tags");
+            styles ["heading"]
+        }
+
+        Gtk.FlowBox meta_flow {
+            column-spacing: 6;
+            row-spacing: 6;
+            homogeneous: false;
+            hexpand: false;
+            orientation: vertical;
+            halign: center;
+            valign: start;
+            min-children-per-line: 1;
+            max-children-per-line: 20;
+            margin-start: 6;
+            margin-end: 6;            
+        }
+
+    }
+
+    Gtk.Box {
+
+        orientation: vertical;
+        spacing: 10;
+
+        Gtk.Label {
+            label: _("Selected");
+            styles ["heading"]
+        }
+
+        Gtk.FlowBox selected_flow {
+            margin-start: 6;
+            column-spacing: 6;
+            row-spacing: 6;
+            homogeneous: false;
+            hexpand: false;
+            orientation: vertical;
+            halign: center;
+            valign: start;
+            min-children-per-line: 1;
+            max-children-per-line: 20;
+            margin-end: 6;
+        }
+
+    }
+  
+}
+
+Adw.Dialog add_tag_dialog {
+
+    title: "Add Tag";
+
+    content-height: 500;
+    content-width: 800;
+
+    Adw.ToolbarView {
+
+        [top]
+        Adw.HeaderBar {}
+
+        Gtk.Box {
+
+            orientation: vertical;
+            spacing: 10;
+
+            Adw.EntryRow tag_search {
+                title: _("Tag Name");
+                changed => $on_tag_search_changed();
+            }
+
+            Gtk.FlowBox dialog_flow {
+                column-spacing: 6;
+                row-spacing: 6;
+                homogeneous: false;
+                hexpand: false;
+                orientation: vertical;
+                halign: start;
+                valign: start;
+                min-children-per-line: 1;
+                max-children-per-line: 20;
+                margin-end: 6;
+            }
+
+        }
+
+        
+
+    }
+}

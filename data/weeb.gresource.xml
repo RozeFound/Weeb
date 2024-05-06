@@ -5,6 +5,14 @@
     <file preprocess="xml-stripblanks">ui/preferences.ui</file>
     <file preprocess="xml-stripblanks">ui/board.ui</file>
     <file preprocess="xml-stripblanks">ui/tile.ui</file>
+    <file preprocess="xml-stripblanks">ui/tags.ui</file>
+    <file preprocess="xml-stripblanks">ui/tag.ui</file>
     <file preprocess="xml-stripblanks" alias="gtk/help-overlay.ui">ui/help_overlay.ui</file>
+
+    <file>style.css</file>
   </gresource>
+  <gresource prefix="/com/github/RozeFound/Weeb/icons/scalable/actions/">
+  <file preprocess="xml-stripblanks" alias="cross-large-circle-filled-symbolic.svg">icons/scalable/actions/cross-large-circle-filled-symbolic.svg</file>
+  <file preprocess="xml-stripblanks" alias="plus-large-circle-symbolic.svg">icons/scalable/actions/plus-large-circle-symbolic.svg</file>
+</gresource>
 </gresources>
