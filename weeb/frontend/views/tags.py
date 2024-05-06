@@ -17,9 +17,9 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-import random
+from random import Random
 
-from gi.repository import Adw, Gtk, GObject
+from gi.repository import Adw, GObject, Gtk
 
 from weeb.backend.constants import root
 from weeb.backend.providers_manager import ProvidersManager
@@ -29,6 +29,7 @@ from weeb.backend.utils.expected import Expected
 class HoverAction(GObject.GEnum):
     REMOVE = 0
     ADD = 1
+
 
 @Gtk.Template(resource_path=f"{root}/ui/tag.ui")
 class Tag(Gtk.FlowBoxChild):
@@ -46,8 +47,8 @@ class Tag(Gtk.FlowBoxChild):
         self.label = label
         self.hover_action = hover_action 
 
-        random.seed(self.label)
-        self.style = f"custom_color_{random.randint(1, 35)}"
+        color_id = Random(self.label).randint(1, 35)
+        self.style = f"custom_color_{color_id}"
         self.add_css_class(self.style)
 
         self.remove_btn.remove_css_class("image-button")
@@ -71,6 +72,7 @@ class Tag(Gtk.FlowBoxChild):
             self.remove_btn.set_visible(False)
         elif self.hover_action == HoverAction.ADD:
             self.add_btn.set_visible(False)
+
 
 @Gtk.Template(resource_path=f"{root}/ui/tags.ui")
 class Tags(Gtk.Box):
