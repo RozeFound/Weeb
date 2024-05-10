@@ -87,7 +87,8 @@ class Tags(Gtk.Box):
     add_tag_dialog: Adw.Dialog = Gtk.Template.Child()
     tag_search: Adw.EntryRow = Gtk.Template.Child()
 
-    dialog_tags = list()
+    selected_tags: list[Tag] = list()
+    dialog_tags: list[Tag] = list()
 
     def __init__(self) -> None:
         super().__init__()
@@ -95,8 +96,9 @@ class Tags(Gtk.Box):
         self.app = Adw.Application.get_default()
         self.manager = ProvidersManager()
 
-        self.fill_meta_tags()
         self.fill_test_tags()
+        self.fill_meta_tags()
+
 
     def fill_test_tags(self) -> None:
 
@@ -105,6 +107,7 @@ class Tags(Gtk.Box):
         for tag in test_tags:
             tag = Tag(tag, Action.REMOVE)
             self.selected_flow.append(tag)
+            self.selected_tags.append(tag)
 
     def fill_meta_tags(self) -> None:
 
@@ -112,8 +115,9 @@ class Tags(Gtk.Box):
         meta_ratings = ("rating:sensitive", "rating:general", "rating:questionable", "rating:explicit")
         
         for meta in (*meta_types, *meta_ratings):
-            tag = Tag(meta, HoverAction.ADD)
-            self.meta_flow.append(tag)
+            tag = Tag(meta, Action.ADD)
+            if tag not in self.selected_tags:
+                self.meta_flow.append(tag)
 
     #@Gtk.Template.Callback()
     def on_add_tag_clicked(self, *args) -> None:
