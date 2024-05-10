@@ -18,6 +18,7 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
 from random import Random
+from typing import Callable, Optional
 
 from gi.repository import Adw, GObject, Gtk
 
@@ -26,9 +27,10 @@ from weeb.backend.providers_manager import ProvidersManager
 from weeb.backend.utils.expected import Expected
 
 
-class HoverAction(GObject.GEnum):
-    REMOVE = 0
-    ADD = 1
+class Action(GObject.GEnum):
+    NONE = 0
+    REMOVE = 1
+    ADD = 2
 
 
 @Gtk.Template(resource_path=f"{root}/ui/tag.ui")
@@ -39,36 +41,39 @@ class Tag(Gtk.FlowBoxChild):
     add_btn: Gtk.Button = Gtk.Template.Child()
 
     label: str = GObject.Property(type=str)
-    hover_action: HoverAction
 
-    def __init__(self, label: str = ..., hover_action: HoverAction = ...) -> None:
+    def __init__(self, label: str, action: Action = Action.NONE) -> None:
         super().__init__()
 
         self.label = label
-        self.hover_action = hover_action 
+        if action: self.add_action(action)
 
         color_id = Random(self.label).randint(1, 35)
         self.style = f"custom_color_{color_id}"
         self.add_css_class(self.style)
 
-        motion_controller = Gtk.EventControllerMotion.new()
-        motion_controller.connect("enter", self.on_motion_enter)
-        motion_controller.connect("leave", self.on_motion_leave)
-        self.add_controller(motion_controller)
+    def get_action_btn(self, action: Action) -> Gtk.Button:
 
-    def on_motion_enter(self, *args) -> None:
+        match action:
+            case Action.ADD: return self.add_btn
+            case Action.REMOVE: return self.remove_btn
 
-        if self.hover_action == HoverAction.REMOVE:
-            self.remove_btn.set_visible(True)
-        elif self.hover_action == HoverAction.ADD:
-            self.add_btn.set_visible(True)
+    def add_action(self, action: Action, callback: Optional[Callable] = None) -> None:
 
-    def on_motion_leave(self, *args) -> None:
+        btn = self.get_action_btn(action)
+        if callback: btn.connect("clicked", callback)
+        btn.set_visible(True)
 
-        if self.hover_action == HoverAction.REMOVE:
-            self.remove_btn.set_visible(False)
-        elif self.hover_action == HoverAction.ADD:
-            self.add_btn.set_visible(False)
+    def remove_action(self, action: Optional[Action] = None) -> None:
+
+        if not action:
+            self.remove_action(Action.REMOVE)
+            self.remove_action(Action.ADD)
+            return
+
+        btn = self.get_action_btn(action)
+        btn.disconnect("clicked")
+        btn.set_visible(False)
 
 
 @Gtk.Template(resource_path=f"{root}/ui/tags.ui")
@@ -98,7 +103,7 @@ class Tags(Gtk.Box):
         test_tags = ("1girl", "1boy", "rating:sensitive")
 
         for tag in test_tags:
-            tag = Tag(tag, HoverAction.REMOVE)
+            tag = Tag(tag, Action.REMOVE)
             self.selected_flow.append(tag)
 
     def fill_meta_tags(self) -> None:
@@ -125,7 +130,7 @@ class Tags(Gtk.Box):
             self.dialog_tags.clear()
 
             for tag in _e_tags.value:
-                tag = Tag(tag, HoverAction.ADD)
+                tag = Tag(tag, Action.ADD)
                 self.dialog_flow.append(tag)
                 self.dialog_tags.append(tag)
 
