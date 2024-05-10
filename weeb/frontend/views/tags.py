@@ -17,10 +17,11 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
+import logging
 from random import Random
 from typing import Callable, Optional
 
-from gi.repository import Adw, GObject, Gtk
+from gi.repository import Adw, GLib, GObject, Gtk
 
 from weeb.backend.constants import root
 from weeb.backend.providers_manager import ProvidersManager
@@ -51,6 +52,9 @@ class Tag(Gtk.FlowBoxChild):
         color_id = Random(self.label).randint(1, 35)
         self.style = f"custom_color_{color_id}"
         self.add_css_class(self.style)
+
+    def __eq__(self, other: object) -> bool:
+        return self.label == other.label
 
     def get_action_btn(self, action: Action) -> Gtk.Button:
 
@@ -99,6 +103,13 @@ class Tags(Gtk.Box):
         self.fill_test_tags()
         self.fill_meta_tags()
 
+        GLib.timeout_add_seconds(2, self.emit, "tags-changed", self.get_tags())
+
+    def get_tags(self) -> list[str]:
+        return [tag.label for tag in self.selected_tags]
+
+    @GObject.Signal(name="tags-changed", arg_types=(object,), flags=GObject.SignalFlags.RUN_LAST)
+    def tags_changed(self, *args) -> None: logging.info(f"Tags selection changed to: {', '.join(self.get_tags())}")
 
     def fill_test_tags(self) -> None:
 

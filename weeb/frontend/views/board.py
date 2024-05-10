@@ -17,7 +17,7 @@
 #
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-from gi.repository import Adw, GLib, Gtk
+from gi.repository import Adw, Gtk
 
 from weeb.backend.constants import root
 from weeb.backend.primitives import Asset
@@ -43,8 +43,6 @@ class Board(Adw.Bin):
         super().__init__(**kwargs)
 
         self.manager = ProvidersManager()
-
-        GLib.timeout_add_seconds(2, self.search_by_tags, ["1girl", "1boy", "rating:sensitive"])
 
     def search_by_tags(self, tags: list[str]) -> None:
 

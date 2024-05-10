@@ -42,6 +42,7 @@ class WeebWindow(Adw.ApplicationWindow):
             default_height=self.settings.get_int("window-height"),
             maximized=self.settings.get_boolean("window-maximized"))
 
+        self.tags.connect("tags-changed", self.on_tags_changed)
         self.connect("close_request", self.on_close_request)
         self.connect("unrealize", self.on_unrealize)
 
@@ -60,6 +61,9 @@ class WeebWindow(Adw.ApplicationWindow):
         self.settings.set_int('window-width', width)
         self.settings.set_int('window-height', height)
         self.settings.set_boolean('window-maximized', maximized)
+
+    def on_tags_changed(self, widget: Tags, tags: list[str]) -> None:
+        self.board.search_by_tags(tags)
 
     def on_toggle_sidebar_action(self, *args) -> None:
         self.split_view.set_show_sidebar(not self.split_view.get_show_sidebar())
