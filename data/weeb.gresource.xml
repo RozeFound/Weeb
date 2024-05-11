@@ -14,5 +14,6 @@
   <gresource prefix="/com/github/RozeFound/Weeb/icons/scalable/actions/">
   <file preprocess="xml-stripblanks" alias="cross-large-circle-filled-symbolic.svg">icons/scalable/actions/cross-large-circle-filled-symbolic.svg</file>
   <file preprocess="xml-stripblanks" alias="plus-large-circle-symbolic.svg">icons/scalable/actions/plus-large-circle-symbolic.svg</file>
+  <file preprocess="xml-stripblanks" alias="loupe-large-symbolic.svg">icons/scalable/actions/loupe-large-symbolic.svg</file>
 </gresource>
 </gresources>

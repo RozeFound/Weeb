@@ -6,12 +6,77 @@ template $Tags : Gtk.Box {
     orientation: vertical;
     spacing: 10;
 
-    Gtk.Box {
+    Gtk.SearchBar search_bar {
+
+        search-mode-enabled: true;
+
+        Gtk.Box {
+
+            spacing: 4;
+
+            SearchEntry search_entry {
+                placeholder-text: _("Search");
+                search-changed => $on_tag_search_changed();
+                hexpand: true;
+            }
+
+            ShortcutController {
+                Shortcut {
+                    trigger: "Escape";
+                    action: "action(win.toggle_search)";
+                }
+            }
+
+        }
+
+    }
+
+    Gtk.Box search_box {
+
+        visible: false;
 
         orientation: vertical;
         spacing: 10;
 
         Gtk.Label {
+            label: _("Search results: ");
+            styles ["heading"]
+        }
+
+        Gtk.FlowBox search_flow {
+            column-spacing: 6;
+            row-spacing: 6;
+            homogeneous: false;
+            hexpand: false;
+            orientation: vertical;
+            halign: center;
+            valign: start;
+            min-children-per-line: 1;
+            max-children-per-line: 20;
+            margin-start: 6;
+            margin-end: 6;    
+        }
+
+        Adw.StatusPage  {
+            visible: bind search_flow.visible inverted;
+            title: _("Wow, it's empty!");
+            icon-name: "loupe-large-symbolic";
+            hexpand: true;
+            vexpand: true;
+            styles ["compact", "dim-label"]
+        }
+        
+    }
+
+    Gtk.Box {
+
+        visible: bind search_box.visible inverted;
+
+        orientation: vertical;
+        spacing: 10;
+
+        Gtk.Label {
+            visible: bind meta_flow.visible;
             label: _("Meta Tags");
             styles ["heading"]
         }
@@ -30,14 +95,8 @@ template $Tags : Gtk.Box {
             margin-end: 6;            
         }
 
-    }
-
-    Gtk.Box {
-
-        orientation: vertical;
-        spacing: 10;
-
         Gtk.Label {
+            visible: bind selected_flow.visible;
             label: _("Selected");
             styles ["heading"]
         }
@@ -58,46 +117,4 @@ template $Tags : Gtk.Box {
 
     }
   
-}
-
-Adw.Dialog add_tag_dialog {
-
-    title: "Add Tag";
-
-    content-height: 500;
-    content-width: 800;
-
-    Adw.ToolbarView {
-
-        [top]
-        Adw.HeaderBar {}
-
-        Gtk.Box {
-
-            orientation: vertical;
-            spacing: 10;
-
-            Adw.EntryRow tag_search {
-                title: _("Tag Name");
-                changed => $on_tag_search_changed();
-            }
-
-            Gtk.FlowBox dialog_flow {
-                column-spacing: 6;
-                row-spacing: 6;
-                homogeneous: false;
-                hexpand: false;
-                orientation: vertical;
-                halign: start;
-                valign: start;
-                min-children-per-line: 1;
-                max-children-per-line: 20;
-                margin-end: 6;
-            }
-
-        }
-
-        
-
-    }
 }

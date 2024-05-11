@@ -55,6 +55,7 @@ class Board(Adw.Bin):
 
     def populate_board(self, e_assets: Expected[set[Asset]]) -> None:
 
+        self.flow.clear()
         assets = e_assets.value
 
         for asset in assets:

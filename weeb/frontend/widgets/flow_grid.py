@@ -29,6 +29,8 @@ class FlowGridChild(Gtk.Box):
 
     def __init__(self, **kwargs):
 
+        self.children : list[Gtk.Widget] = []
+
         orientation = self.settings.get("board/orientation", 0)
         tile_size = self.settings.get("board/tile/size", 180)
 
@@ -50,7 +52,27 @@ class FlowGridChild(Gtk.Box):
         elif self.get_orientation() == Gtk.Orientation.HORIZONTAL: 
             self.set_size_request(parent_width + widget_width, parent_height)
 
+        self.children.append(widget)
         super().append(widget)
+
+    def remove(self, widget: Gtk.Widget) -> None:
+
+        parent_width, parent_height = self.get_size_request()
+        widget_width, widget_height = widget.get_size_request()
+
+        if self.get_orientation() == Gtk.Orientation.VERTICAL:
+            self.set_size_request(parent_width, parent_height - widget_height)
+        elif self.get_orientation() == Gtk.Orientation.HORIZONTAL: 
+            self.set_size_request(parent_width - widget_width, parent_height)
+
+        self.children.remove(widget)
+        super().remove(widget)
+
+    def clear(self) -> None:
+        for widget in self.children: self.remove(widget)
+
+    def get_children(self) -> list[Gtk.Widget]:
+        return self.children
 
 class FlowGrid(Gtk.Box):
     __gtype_name__ = "FlowGrid"
@@ -71,3 +93,12 @@ class FlowGrid(Gtk.Box):
     def append(self, widget: Gtk.Widget) -> None:
         child = self.get_shortest_child()
         child.append(widget)
+
+    def remove(self, widget: Gtk.Widget) -> None:
+
+        for child in self.children:
+            if widget in child.get_children():
+                return child.remove(widget)
+
+    def clear(self) -> None:
+        for child in self.children: child.clear()

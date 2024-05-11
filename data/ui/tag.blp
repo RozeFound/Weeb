@@ -14,22 +14,16 @@ template $Tag : Gtk.FlowBoxChild {
         Gtk.Label {
             halign: start;
             valign: center;
+            ellipsize: end;
             label: bind template.label;
+            tooltip-text: bind template.label;
             styles ["small-label"]
         }
 
-        Gtk.Button remove_btn {
+        Gtk.Button action_btn {
             visible: false;
             valign: fill;
-            icon-name: "cross-large-circle-filled-symbolic";
-            styles ["circle", "small-button", "destructive-action"]
-        }
-
-        Gtk.Button add_btn {
-            visible: false;
-            valign: fill;
-            icon-name: "plus-large-circle-symbolic";
-            styles ["circle", "small-button", "suggested-action"]
+            styles ["circle", "small-button"]
         }
 
     }

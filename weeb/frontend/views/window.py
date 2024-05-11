@@ -67,3 +67,8 @@ class WeebWindow(Adw.ApplicationWindow):
 
     def on_toggle_sidebar_action(self, *args) -> None:
         self.split_view.set_show_sidebar(not self.split_view.get_show_sidebar())
+
+    def on_toggle_search_action(self, *args) -> None:
+        self.split_view.set_show_sidebar(True)
+        self.set_focus(self.tags.search_entry)
+        self.tags.search_entry.set_text("")

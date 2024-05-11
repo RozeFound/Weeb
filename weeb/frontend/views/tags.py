@@ -25,6 +25,7 @@ from gi.repository import Adw, GLib, GObject, Gtk
 
 from weeb.backend.constants import root
 from weeb.backend.providers_manager import ProvidersManager
+from weeb.backend.settings import Settings
 from weeb.backend.utils.expected import Expected
 
 
@@ -38,8 +39,8 @@ class Action(GObject.GEnum):
 class Tag(Gtk.FlowBoxChild):
     __gtype_name__ = "Tag"
 
-    remove_btn: Gtk.Button = Gtk.Template.Child()
-    add_btn: Gtk.Button = Gtk.Template.Child()
+    action_btn: Gtk.Button = Gtk.Template.Child()
+    action_id: int | None = None
 
     label: str = GObject.Property(type=str)
 
@@ -47,7 +48,7 @@ class Tag(Gtk.FlowBoxChild):
         super().__init__()
 
         self.label = label
-        if action: self.add_action(action)
+        if action: self.set_action(action)
 
         color_id = Random(self.label).randint(1, 35)
         self.style = f"custom_color_{color_id}"
@@ -56,29 +57,32 @@ class Tag(Gtk.FlowBoxChild):
     def __eq__(self, other: object) -> bool:
         return self.label == other.label
 
-    def get_action_btn(self, action: Action) -> Gtk.Button:
+    def set_action(self, action: Action, callback: Optional[Callable] = None) -> None:
 
+        self.action_btn.remove_css_class("destructive-action")
+        self.action_btn.remove_css_class("suggested-action")
+        
         match action:
-            case Action.ADD: return self.add_btn
-            case Action.REMOVE: return self.remove_btn
+            case Action.REMOVE:
+                self.action_btn.set_icon_name("cross-large-circle-filled-symbolic")
+                self.action_btn.add_css_class("destructive-action")
+            case Action.ADD:
+                self.action_btn.set_icon_name("plus-large-circle-symbolic")
+                self.action_btn.add_css_class("suggested-action")
 
-    def add_action(self, action: Action, callback: Optional[Callable] = None) -> None:
+        self.action_btn.set_visible(action != Action.NONE)
 
-        btn = self.get_action_btn(action)
-        if callback: btn.connect("clicked", callback)
-        btn.set_visible(True)
+    def remove_callback(self) -> None:
 
-    def remove_action(self, action: Optional[Action] = None) -> None:
+        if self.action_id is not None:
+            self.action_btn.disconnect(self.action_id)
 
-        if not action:
-            self.remove_action(Action.REMOVE)
-            self.remove_action(Action.ADD)
-            return
+    def set_callback(self, callback: Callable, *args, **kwargs) -> None:
 
-        btn = self.get_action_btn(action)
-        btn.disconnect("clicked")
-        btn.set_visible(False)
+        self.remove_callback()
 
+        if kwargs: args += tuple([value for _, value in kwargs])
+        self.action_id = self.action_btn.connect("clicked", callback, *args)
 
 @Gtk.Template(resource_path=f"{root}/ui/tags.ui")
 class Tags(Gtk.Box):
@@ -86,13 +90,17 @@ class Tags(Gtk.Box):
 
     meta_flow: Gtk.FlowBox = Gtk.Template.Child()
     selected_flow: Gtk.FlowBox = Gtk.Template.Child()
-    dialog_flow: Gtk.FlowBox = Gtk.Template.Child()
+    search_flow: Gtk.FlowBox = Gtk.Template.Child()
 
-    add_tag_dialog: Adw.Dialog = Gtk.Template.Child()
-    tag_search: Adw.EntryRow = Gtk.Template.Child()
+    search_bar: Gtk.SearchBar = Gtk.Template.Child()
+    search_entry: Gtk.SearchEntry = Gtk.Template.Child()
+    search_box: Gtk.Box = Gtk.Template.Child()
 
     selected_tags: list[Tag] = list()
-    dialog_tags: list[Tag] = list()
+    search_tags: list[Tag] = list()
+    meta_tags: list[Tag] = list()
+
+    settings = Settings()
 
     def __init__(self) -> None:
         super().__init__()
@@ -100,25 +108,19 @@ class Tags(Gtk.Box):
         self.app = Adw.Application.get_default()
         self.manager = ProvidersManager()
 
-        self.fill_test_tags()
+        self.fill_selected_tags()
         self.fill_meta_tags()
 
         GLib.timeout_add_seconds(2, self.emit, "tags-changed", self.get_tags())
 
-    def get_tags(self) -> list[str]:
-        return [tag.label for tag in self.selected_tags]
+    def fill_selected_tags(self) -> None:
 
-    @GObject.Signal(name="tags-changed", arg_types=(object,), flags=GObject.SignalFlags.RUN_LAST)
-    def tags_changed(self, *args) -> None: logging.info(f"Tags selection changed to: {', '.join(self.get_tags())}")
-
-    def fill_test_tags(self) -> None:
-
-        test_tags = ("1girl", "1boy", "rating:sensitive")
-
-        for tag in test_tags:
-            tag = Tag(tag, Action.REMOVE)
-            self.selected_flow.append(tag)
-            self.selected_tags.append(tag)
+        if tags := self.settings.get("tags"):
+            for tag in tags: 
+                tag = Tag(tag, Action.REMOVE)
+                tag.set_callback(self.remove_tag, tag)
+                self.selected_flow.append(tag)
+                self.selected_tags.append(tag)
 
     def fill_meta_tags(self) -> None:
 
@@ -127,30 +129,82 @@ class Tags(Gtk.Box):
         
         for meta in (*meta_types, *meta_ratings):
             tag = Tag(meta, Action.ADD)
-            if tag not in self.selected_tags:
+            if tag not in (*self.meta_tags, *self.selected_tags):
+                tag.set_callback(self.add_tag, tag)
                 self.meta_flow.append(tag)
+                self.meta_tags.append(tag)
 
-    #@Gtk.Template.Callback()
-    def on_add_tag_clicked(self, *args) -> None:
-        self.add_tag_dialog.present(self.app.window)
+    def get_tags(self) -> list[str]:
+        return [tag.label for tag in self.selected_tags]
+
+    @GObject.Signal(name="tags-changed", arg_types=(object,), flags=GObject.SignalFlags.RUN_LAST)
+    def tags_changed(self, tags: list[str]) -> None:
+        logging.info(f"Tags selection changed to: {', '.join(tags)}")
+        self.settings.set("tags", tags)
+
+    def update_visibility(self) -> None:
+
+        self.selected_flow.set_visible(bool(self.selected_tags))
+        self.search_flow.set_visible(bool(self.search_tags))
+        self.meta_flow.set_visible(bool(self.meta_tags))
+
+    def add_tag(self, widget: Gtk.Widget, tag: Tag) -> None:
+
+        if tag in self.meta_tags:
+            self.meta_flow.remove(tag)
+            self.meta_tags.remove(tag)
+
+        if tag in self.search_tags:
+            self.search_flow.remove(tag)
+            self.search_tags.remove(tag)
+
+        if tag not in self.selected_tags:
+            self.selected_flow.append(tag)
+            self.selected_tags.append(tag)
+            
+        tag.set_action(Action.REMOVE)
+        tag.set_callback(self.remove_tag, tag)
+        self.update_visibility()
+        self.emit("tags-changed", self.get_tags())
+
+    def remove_tag(self, widget: Gtk.Widget, tag: Tag) -> None:
+
+        if tag in self.selected_tags:
+            self.selected_flow.remove(tag)
+            self.selected_tags.remove(tag)
+
+        self.fill_meta_tags()
+        self.update_visibility()
+        self.emit("tags-changed", self.get_tags())
 
     @Gtk.Template.Callback()
     def on_tag_search_changed(self, *args) -> None:
 
         def helper(_e_tags: Expected[set[str]]) -> None:
 
-            for tag in self.dialog_tags:
-                self.dialog_flow.remove(tag)
+            for tag in self.search_tags:
+                self.search_flow.remove(tag)
 
-            self.dialog_tags.clear()
+            self.search_tags.clear()
 
             for tag in _e_tags.value:
+
                 tag = Tag(tag, Action.ADD)
-                self.dialog_flow.append(tag)
-                self.dialog_tags.append(tag)
+
+                if tag not in self.selected_tags:
+                    tag.set_callback(self.add_tag, tag)
+                    self.search_flow.append(tag)
+                    self.search_tags.append(tag)
+
+            self.search_box.set_visible(True)
+            self.update_visibility()
 
         def run_search() -> None:
-            self.e_tags = self.manager.search_tags_async(self.tag_search.get_text(), helper)
+            self.e_tags = self.manager.search_tags_async(self.search_entry.get_text(), helper)
+
+        if self.search_entry.get_text() == "":
+            self.search_box.set_visible(False)
+            return
 
         if hasattr(self, 'e_tags') and self.e_tags.is_running(): 
             self.e_tags.on_finish(run_search)
