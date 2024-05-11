@@ -26,6 +26,8 @@ from weeb.backend.utils.expected import Expected
 from weeb.backend.utils.singleton import Singleton
 from weeb.backend.utils.threading import run_in_thread
 
+from weeb.backend.constants import version
+
 
 class Downloader(metaclass=Singleton):
 
@@ -53,6 +55,7 @@ class Downloader(metaclass=Singleton):
         cache_transport = hishel.CacheTransport(transport=transport, storage=storage, controller=controller)
         
         self.client = httpx.Client(transport=cache_transport)
+        self.client.headers.update({"User-Agent": f"RozeFound/Weeb/{version}"})
 
     def get(self, url: str, **kwargs) -> httpx.Response:
         return self.client.get(url, **kwargs)
